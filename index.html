@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+
+    <title>Calificación de Observaciones de Audiotria</title>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-light white">
+            <div class="container">
+                <a class="navbar-brand" href="#">
+                    <img src="./img/logo solo.jpg" alt="" width="55" height="45">
+                </a>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <section class="container mt-3 mb-3">
+            <h1>Calificador de Observaciones de Auditoria</h1>
+            <div class="input-group">
+                <span class="input-group-text">Observación</span>
+                <textarea class="form-control" aria-label="With textarea"></textarea>
+            </div>
+            <div class="container p-2">
+                <label>Tipo de Auditoria</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
+                    <label class="form-check-label" for="flexRadioDefault1">
+                        Auditoria Operativa
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+                    <label class="form-check-label" for="flexRadioDefault2">
+                        Auditoria de Sistemas
+                    </label>
+                </div>
+            </div>
+            <div class="container p-4">
+                <label> Factores de Criticidad</label>
+                <div class="container p-2">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Operacional
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Muy Alto</a></li>
+                            <li><a class="dropdown-item" href="#">Alto</a></li>
+                            <li><a class="dropdown-item" href="#">Medio</a></li>
+                            <li><a class="dropdown-item" href="#">Bajo</a></li>
+                            <li><a class="dropdown-item" href="#">Sin Impacto</a></li>
+                        </ul>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Información
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Integridad</a></li>
+                            <li><a class="dropdown-item" href="#">Confidencialidad</a></li>
+                            <li><a class="dropdown-item" href="#">Confiabilidad</a></li>
+                            <li><a class="dropdown-item" href="#">Eficiencia</a></li>
+                            <li><a class="dropdown-item" href="#">Efectividad</a></li>
+                            <li><a class="dropdown-item" href="#">Disponibilidadad</a></li>
+                        </ul>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Impacto Monetario
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Muy Alto</a></li>
+                            <li><a class="dropdown-item" href="#">Alto</a></li>
+                            <li><a class="dropdown-item" href="#">Medio</a></li>
+                            <li><a class="dropdown-item" href="#">Bajo</a></li>
+                            <li><a class="dropdown-item" href="#">Sin Impacto</a></li>
+                        </ul>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Cumplimiento
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Ente Regulador</a></li>
+                            <li><a class="dropdown-item" href="#">Interna</a></li>
+                            <li><a class="dropdown-item" href="#">Otros</a></li>
+                        </ul>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Antigüedad
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Mayor o igual a 18 meses</a></li>
+                            <li><a class="dropdown-item" href="#">mayor a doce meses y menor a 18 meses</a></li>
+                            <li><a class="dropdown-item" href="#">Menor o igual a 12 meses</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="dropdown p-4">
+                <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    Probabilidad de Ocurrencia
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <li><a class="dropdown-item" href="#">Poco Frecuente</a></li>
+                    <li><a class="dropdown-item" href="#">Frecuencia Normal</a></li>
+                    <li><a class="dropdown-item" href="#">Frecuente</a></li>
+                    <li><a class="dropdown-item" href="#">Muy Frecuente</a></li>
+                </ul>
+            </div>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button class="btn btn-primary me-md-2" type="button">Calcular Riesgo</button>
+            </div>
+        </section>
+    </main>
+    <footer>
+
+    </footer>
+    <script src="./js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
