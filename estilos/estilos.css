@@ -1,0 +1,67 @@
+/*@charset "UTF-8";
+@import url("https://fonts.googleapis.com/css2? family= Baile+Guión & family= Josefin+Sans & family= Poppins:wght@200 & family= Roboto:wght@100 & family= Shadows+Into+Light & family= Square+Peg & display=swap");
+*/
+* {
+    padding: 0;
+    margin: 0;
+}
+
+footer {
+    color: white;
+    background-color: rgb(49, 40, 167);
+    margin-bottom: 0px;
+    bottom: 0px;
+    height: 85px;
+    background-size: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+}
+
+.direcciones {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+footer h3 {
+    padding: 5px;
+    margin: 1px;
+    font-size: 13px;
+    font-weight: bold;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+footer h4 {
+    font-size: 12px;
+    font-style: italic;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.iconos {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+i {
+    color: whitesmoke;
+    font-size: 25px;
+    margin: 5px;
+}
+
+i:hover {
+    color: gray;
+}
+
+h1{
+    visibility: hidden;
+}
+
+h2{
+    font-size: 18px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    text-align: center;
+    font-weight: bold;
+}

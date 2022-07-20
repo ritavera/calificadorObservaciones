@@ -1,5 +1,9 @@
-/* La idea es determinar el riesgo de observaciones de auditoria ingresadas en funcion de factores de criticidad y 
-a la probabilidad de ocurrencia*/
+/* La idea es cargar las observaciones de auditoria, para ello se solicitan datos para la carga inicial y se
+determinar el riesgo de las mismas en funciónn de factores de criticidad y a la probabilidad de ocurrencia.
+Ademas se pueden:
+-generar reportes por  tipo, riesgo, origen
+-Verificar si existe una determinada observacion en el listado de observaciones
+*/
 
 
 
@@ -135,20 +139,28 @@ function calcularOcurrencia(valor) {
 
 
 class observacion {
-    constructor(descripcion, riesgoasignado, tipo) {
+    constructor(codigo, descripcion, riesgoasignado, tipo, origen) {
+        this.codigo = codigo;
         this.descripcion = descripcion;
         this.riesgoasignado = riesgoasignado.toUpperCase();
         this.tipo = tipo;
+        this.origen = origen;
     }
 }
-// array de obsevaciones
-const observaciones = [];
+// array de observaciones
+const observaciones = [
+    { codigo: 1, descripcion: "AUSENCIA DE PROCEDIMIENTO FORMALIZADO", riesgoasignado: "ALTO", tipo: "OPERATIVA", origen: "ENTE REGULADOR" },
+    { codigo: 2, descripcion: "DEBILIDADES EN EL MANUAL DE USUARIO", riesgoasignado: "MEDIO", tipo: "SISTEMAS", origen: "INTERNA" },
+    { codigo: 3, descripcion: "DEBILIDADES EN LA ASIGNACION DE PERFILES DE USUARIO", riesgoasignado: "BAJO", tipo: "SISTEMAS", origen: "OTROS" },
+    { codigo: 4, descripcion: "AUSENCIA DE PLAN ESTRATEGICO", riesgoasignado: "ALTO", tipo: "SISTEMAS", origen: "ENTE REGULADOR" },
 
-function cargar(valor1, valor2, valor3) {
-    return observaciones.push(new observacion(valor1, valor2, valor3));
+];
+
+function cargar(valor1, valor2, valor3, valor4, valor5) {
+    return observaciones.push(new observacion(valor1, valor2, valor3, valor4, valor5));
 }
 
-let respuesta = prompt("¿Desea calificar una observacion? Si/No").toUpperCase();;
+let respuesta = prompt("¿Desea calificar una observacion? Si/No").toUpperCase();
 while (respuesta == "SI") {
     let temp = 0;
     let criticidad = 0;
@@ -180,17 +192,11 @@ while (respuesta == "SI") {
                             //contador = contador + 1;
                             let riesgo = temp * nivelCriticidad;
                             if (riesgo <= 4) {
-                                cargar(nvaObservacion, "bajo", tipoAuditoria);
-                                //alert(`La observación "${nvaObservacion}" de Auditoria-${tipoAuditoria}, es de riesgo BAJO`);
-                                //observaciones.push(new observacion(nvaObservacion, "bajo", tipoAuditoria));
+                                cargar(observaciones.length + 1, nvaObservacion, "bajo", tipoAuditoria, cumplimiento);
                             } else if (riesgo <= 11) {
-                                cargar(nvaObservacion, "medio", tipoAuditoria);
-                                //alert(`La observación "${nvaObservacion}" de Auditoria-${tipoAuditoria}, es de riesgo MEDIO`);
-                                //observaciones.push(new observacion(nvaObservacion, "medio", tipoAuditoria));
+                                cargar(observaciones.length + 1, nvaObservacion, "medio", tipoAuditoria, cumplimiento);
                             } else {
-                                cargar(nvaObservacion, "alto", tipoAuditoria);
-                                //alert(`La observación "${nvaObservacion}" de Auditoria-${tipoAuditoria}, es de riesgo ALTO`);
-                                //observaciones.push(new observacion(nvaObservacion, "alto", tipoAuditoria));
+                                cargar(observaciones.length + 1, nvaObservacion, "alto", tipoAuditoria, cumplimiento);
                             }
                         }
                         else {
@@ -212,19 +218,17 @@ while (respuesta == "SI") {
             alert(`Error en el parámetro Factor de Riesgo Operacional (se ingresó ${operacional}). No se puede calcular el riesgo`);
         }
     } else {
-        alert(`Error en el parámetro Tipo de Auditroria (se ingresó ${tipoAuditoria}). No se puede calcular el riesgo`);
+        alert(`Error en el parámetro Tipo de Auditoria (se ingresó ${tipoAuditoria}). No se puede calcular el riesgo`);
     }
     respuesta = prompt("¿Desea calificar otra observacion? Si/No").toUpperCase();
 }
-console.log(observaciones);
-if (observaciones.length != 0) {
+//console.log(observaciones);
+
+/*if (observaciones.length != 0) {
     respuesta = prompt("¿Desea imprimir el listado de observaciones?").toUpperCase();
     if (respuesta == "SI") {
         console.log("Listado de Observaciones");
         for (const observacion of observaciones) {
-            /*console.log(observacion.descripcion);
-            console.log(observacion.riesgoasignado);
-            console.log(observacion.tipo);*/
             if (observacion.tipo === "SISTEMAS") {
                 console.log(`La observación "${observacion.descripcion}", es de Riesgo ${observacion.riesgoasignado} y es una observación de Auditoria de ${observacion.tipo}`)
             } else {
@@ -232,6 +236,50 @@ if (observaciones.length != 0) {
             }
         }
     }
-}
-//alert(`Se han calificado ${contador} observaciones`);
+}*/
 
+function imprimir(arreglo) {
+    arreglo.forEach(i => {
+        if (i.tipo === "SISTEMAS") {
+            console.log(`${i.codigo}: La observación "${i.descripcion}", es de Riesgo ${i.riesgoasignado} y es una observación de Auditoria de ${i.tipo}`);
+        } else {
+            console.log(`${i.codigo}: La observación "${i.descripcion}", es de Riesgo ${i.riesgoasignado} y es una observación de Auditoria ${i.tipo}`);
+        }
+    })
+}
+
+
+
+respuesta = prompt("Reporte por tipo de observacion: Operativa/ Sistemas").toUpperCase();
+if (respuesta == "OPERATIVA" || respuesta == "SISTEMAS") {
+    const observacionesFiltradas = observaciones.filter(i => i.tipo === respuesta);
+    console.log(`Listado de observaciones: ${respuesta}`)
+    imprimir(observacionesFiltradas);
+} else {
+    alert(`No se puede generar el reporte, error en el Tipo de Auditoria ingresado`);
+}
+
+respuesta = prompt("Reporte por riesgo de la observacion: Alto / Medio / Bajo").toUpperCase();
+if (respuesta == "BAJO" || respuesta == "MEDIO" || respuesta == "ALTO") {
+    const observacionesFiltradas = observaciones.filter(i => i.riesgoasignado === respuesta);
+    console.log(`Listado de observaciones: Riesgo ${respuesta}`)
+    imprimir(observacionesFiltradas);
+} else {
+    alert(`No se puede generar el reporte, error en el riesgo ingresado`);
+}
+
+respuesta = prompt("Reporte por origen de la observacion: Ente Regulador / Interna / Otros").toUpperCase();
+if (respuesta == "ENTE REGULADOR" || respuesta == "INTERNA" || respuesta == "OTROS") {
+    const observacionesFiltradas = observaciones.filter(i => i.origen === respuesta);
+    console.log(`Listado de observaciones: Origen ${respuesta}`)
+    imprimir(observacionesFiltradas);
+} else {
+    alert(`No se puede generar el reporte, error en el origen ingresado`);
+}
+
+respuesta = prompt("Ingrese la observacion a buscar").toUpperCase();
+if (observaciones.some(i => i.descripcion === respuesta)) {
+    console.log(`La observacion "${respuesta}" existe en el listado de observaciones`);
+} else {
+    console.log(`La observacion "${respuesta}" NO existe en el listado de observaciones`);
+}
