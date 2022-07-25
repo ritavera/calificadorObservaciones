@@ -26,8 +26,8 @@
                         </li>
                     </ul>
                     <form class="d-flex" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit">Buscar</button>
+                        <input class="form-control me-2 etiquetaBuscar" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success botonBuscar" type="submit">Buscar</button>
                     </form>
                 </div>
             </div>
@@ -37,146 +37,124 @@
         <section class="container mt-3 mb-3">
             <h1>Seguimiento Observaciones de Auditoria</h1>
             <section class="obs p-3">
-                <h2> Datos de la nueva Observación</h2>
+                <h2>Datos de la nueva Observación</h2>
                 <div class="input-group">
                     <span class="input-group-text">Observación</span>
-                    <textarea class="form-control" aria-label="With textarea"></textarea>
+                    <textarea class="form-control obsIngresada" aria-label="With textarea"></textarea>
                 </div>
                 <div class="container p-2">
-                    <label>Tipo de Auditoria</label>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1"
-                            checked>
-                        <label class="form-check-label" for="flexRadioDefault1">
-                            Auditoria Operativa
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
-                        <label class="form-check-label" for="flexRadioDefault2">
-                            Auditoria de Sistemas
-                        </label>
+                    <label>Tipo de Auditoria</label><br>
+                    <label> <input type="radio" name="status" value="operativa" id="operativa" checked> Auditoria
+                        Operativa</label>
+                    <br>
+                    <label></label><input type="radio" name="status" value="sistemas" id="sistemas"> Auditoria de
+                    Sistemas</label>
+                    <br>
+                </div>
+                <div class="container p-4">
+                    <h3>Factores de Criticidad</h3>
+                    <div class="container p-2">
+                        <select class="form-select form-select-lg mb-3 selectOperacional"
+                            aria-label=".form-select-lg example">
+                            <option selected>Operacional</option>
+                            <option value="1">Muy Alto</option>
+                            <option value="2">Alto</option>
+                            <option value="3">Medio</option>
+                            <option value="4">Bajo</option>
+                            <option value="5">Sin Impacto</option>
+                        </select>
+
+                        <select class="form-select form-select-lg mb-3 selectInformacion"
+                            aria-label=".form-select-lg example">
+                            <option selected>Información</option>
+                            <option value="1">Integridad</option>
+                            <option value="2">Confidencialidad</option>
+                            <option value="3">Confiabilidad</option>
+                            <option value="4">Eficiencia</option>
+                            <option value="5">Efectividad</option>
+                            <option value="6">Disponibilidadad</option>
+                        </select>
+
+                        <select class="form-select form-select-lg mb-3 selectImpacto"
+                            aria-label=".form-select-lg example">
+                            <option selected>Impacto Monetario</option>
+                            <option value="1">Muy Alto</option>
+                            <option value="2">Alto</option>
+                            <option value="3">Medio</option>
+                            <option value="4">Bajo</option>
+                            <option value="5">Sin Impacto</option>
+                        </select>
+
+                        <select class="form-select form-select-lg mb-3 selectCumplimiento"
+                            aria-label=".form-select-lg example">
+                            <option selected>Cumplimiento</option>
+                            <option value="1">Ente Regulador</option>
+                            <option value="2">Interna</option>
+                            <option value="3">Otros</option>
+                        </select>
+
+                        <select class="form-select form-select-lg mb-3 selectAntiguedad"
+                            aria-label=".form-select-lg example">
+                            <option selected>Antigüedad</option>
+                            <option value="1">Mayor o igual a 18 meses</option>
+                            <option value="2">Mayor a doce meses y menor a 18 meses</option>
+                            <option value="3">Menor o igual a 12 meses</option>
+                        </select>
+
                     </div>
                 </div>
                 <div class="container p-4">
-                    <label> Factores de Criticidad</label>
-                    <div class="container p-2">
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                Operacional
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Muy Alto</a></li>
-                                <li><a class="dropdown-item" href="#">Alto</a></li>
-                                <li><a class="dropdown-item" href="#">Medio</a></li>
-                                <li><a class="dropdown-item" href="#">Bajo</a></li>
-                                <li><a class="dropdown-item" href="#">Sin Impacto</a></li>
-                            </ul>
-                        </div>
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                Información
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Integridad</a></li>
-                                <li><a class="dropdown-item" href="#">Confidencialidad</a></li>
-                                <li><a class="dropdown-item" href="#">Confiabilidad</a></li>
-                                <li><a class="dropdown-item" href="#">Eficiencia</a></li>
-                                <li><a class="dropdown-item" href="#">Efectividad</a></li>
-                                <li><a class="dropdown-item" href="#">Disponibilidadad</a></li>
-                            </ul>
-                        </div>
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                Impacto Monetario
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Muy Alto</a></li>
-                                <li><a class="dropdown-item" href="#">Alto</a></li>
-                                <li><a class="dropdown-item" href="#">Medio</a></li>
-                                <li><a class="dropdown-item" href="#">Bajo</a></li>
-                                <li><a class="dropdown-item" href="#">Sin Impacto</a></li>
-                            </ul>
-                        </div>
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                Cumplimiento
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Ente Regulador</a></li>
-                                <li><a class="dropdown-item" href="#">Interna</a></li>
-                                <li><a class="dropdown-item" href="#">Otros</a></li>
-                            </ul>
-                        </div>
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                Antigüedad
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Mayor o igual a 18 meses</a></li>
-                                <li><a class="dropdown-item" href="#">mayor a doce meses y menor a 18 meses</a></li>
-                                <li><a class="dropdown-item" href="#">Menor o igual a 12 meses</a></li>
-                            </ul>
-                        </div>
-                    </div>
+                    <h3>Probabilidad de Ocurrencia</h3>
+                    <select class="form-select form-select-lg mb-3 selectOcurrencia"
+                        aria-label=".form-select-lg example">
+                        <option selected>Ocurrencia</option>
+                        <option value="1">Poco Frecuente</option>
+                        <option value="2">Frecuencia Normal</option>
+                        <option value="3">Frecuente</option>
+                        <option value="4">Muy Frecuente</option>
+                    </select>
                 </div>
-                <div class="dropdown p-2">
-                    <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        Probabilidad de Ocurrencia
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                        <li><a class="dropdown-item" href="#">Poco Frecuente</a></li>
-                        <li><a class="dropdown-item" href="#">Frecuencia Normal</a></li>
-                        <li><a class="dropdown-item" href="#">Frecuente</a></li>
-                        <li><a class="dropdown-item" href="#">Muy Frecuente</a></li>
-                    </ul>
-                </div>
+
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end p-2">
-                    <button class="btn btn-primary me-md-2" type="button">Cargar Observación</button>
+                    <button class="btn btn-primary me-md-2 botonCargar" type="button">Cargar Observación</button>
                 </div>
             </section>
             <section class="filtros p-3">
                 <h2> Seleccione el reporte que desea obtener</h2>
-                <div class="dropdown p-2">
-                    <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        Filtrar por Riesgo
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                        <li><a class="dropdown-item" href="#">Alto</a></li>
-                        <li><a class="dropdown-item" href="#">Medio</a></li>
-                        <li><a class="dropdown-item" href="#">Bajo</a></li>
-                    </ul>
+                <div class="container p-4">
+                    <h3>Filtrar por Riesgo</h3>
+                    <select class="form-select form-select-lg mb-3 selectFRiesgo"
+                        aria-label=".form-select-lg example">
+                        <option value="1" selected>Todos los Riesgos</option>
+                        <option value="2">Alto</option>
+                        <option value="3">Medio</option>
+                        <option value="4">Bajo</option>
+                    </select>
                 </div>
-                <div class="dropdown p-2">
-                    <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        Filtrar por Origen
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                        <li><a class="dropdown-item" href="#">Ente Regulador</a></li>
-                        <li><a class="dropdown-item" href="#">Interna</a></li>
-                        <li><a class="dropdown-item" href="#">Otros</a></li>
-                    </ul>
+                <div class="container p-4">
+                    <h3>Filtrar por Tipo</h3>
+                    <select class="form-select form-select-lg mb-3 selectFTipo"
+                        aria-label=".form-select-lg example">
+                        <option value="1" selected>Operativa y Sistemas</option>
+                        <option value="2">Operativa</option>
+                        <option value="3">Sistemas</option>
+                    </select>
                 </div>
-                <div class="dropdown p-2">
-                    <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        Filtrar por Tipo
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                        <li><a class="dropdown-item" href="#">Sistemas</a></li>
-                        <li><a class="dropdown-item" href="#">Operativa</a></li>
-                    </ul>
-                </div>
+                <!-- <div class="container p-4">
+                    <h3>Filtrar por Origen</h3>
+                    <select class="form-select form-select-lg mb-3 selectFOrigen"
+                        aria-label=".form-select-lg example">
+                        <option value="1" selected>Todos los Riesgos</option>
+                        <option value="2">Ente Regulador</option>
+                        <option value="3">Interna</option>
+                        <option value="4">Otros</option>
+                    </select>
+                </div> -->
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end p-2">
-                    <button class="btn btn-primary me-md-2" type="button">Generar Reporte</button>
+                    <button class="btn btn-primary me-md-2 generarReporte" type="button">Generar Reporte</button>
+                </div>
+                <div id="contenedor">
+
                 </div>
             </section>
         </section>

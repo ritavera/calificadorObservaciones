@@ -1,7 +1,7 @@
 /* La idea es cargar las observaciones de auditoria, para ello se solicitan datos para la carga inicial y se
 determinar el riesgo de las mismas en funciónn de factores de criticidad y a la probabilidad de ocurrencia.
 Ademas se pueden:
--generar reportes por  tipo, riesgo, origen
+-generar reportes por  tipo, riesgo
 -Verificar si existe una determinada observacion en el listado de observaciones
 */
 
@@ -16,12 +16,22 @@ let ponderadorInsignificante = 10;
 let ponderadorMenor = 20;
 let ponderadorMarcado = 40;
 let ponderadorAlto = 60;
-//let contador = 0;
+let contenedor = document.getElementById("contenedor");
 
 function determinarAntiguedad(valor) {
-    let resultado = valor;
-    if (valor >= 2) {
-        resultado = 2;
+    let resultado = 3;
+    switch (valor) {
+        case "1":
+            resultado = 2;
+            break
+        case "2":
+            resultado = 1;
+            break;
+        case "3":
+            resultado = 0;
+            break;
+        default:
+            break;
     }
     return resultado;
 }
@@ -29,19 +39,19 @@ function determinarAntiguedad(valor) {
 function determinarOperacionalImpactoMonetario(valor) {
     let resultado = 5;
     switch (valor) {
-        case "MUY ALTO":
+        case "1":
             resultado = 4;
             break
-        case "ALTO":
+        case "2":
             resultado = 3;
             break;
-        case "MEDIO":
+        case "3":
             resultado = 2;
             break;
-        case "BAJO":
+        case "4":
             resultado = 1;
             break;
-        case "SIN IMPACTO":
+        case "5":
             resultado = 0;
             break;
         default:
@@ -53,22 +63,22 @@ function determinarOperacionalImpactoMonetario(valor) {
 function determinarInformacion(valor) {
     let resultado = 0;
     switch (valor) {
-        case "INTEGRIDAD":
+        case "1":
             resultado = 6;
             break
-        case "CONFIDENCIABILIDAD":
+        case "2":
             resultado = 5;
             break;
-        case "CONFIABILIDAD":
+        case "3":
             resultado = 4;
             break;
-        case "EFICIENCIA":
+        case "4":
             resultado = 3;
             break;
-        case "EFECTIVIDAD":
+        case "5":
             resultado = 2;
             break;
-        case "DISPONIBILIDAD":
+        case "6":
             resultado = 1;
             break;
         default:
@@ -80,13 +90,13 @@ function determinarInformacion(valor) {
 function determinarCumplimiento(valor) {
     let resultado = 0;
     switch (valor) {
-        case "ENTE REGULADOR":
+        case "1":
             resultado = 3;
             break
-        case "INTERNA":
+        case "2":
             resultado = 2;
             break;
-        case "OTROS":
+        case "3":
             resultado = 1;
             break;
         default:
@@ -118,16 +128,16 @@ function calcularNivelCriticidad(c) {
 function calcularOcurrencia(valor) {
     let resultado = 0;
     switch (valor) {
-        case "ESCASA":
+        case "1":
             resultado = 1;
             break
-        case "BAJA":
+        case "2":
             resultado = 2;
             break;
-        case "MEDIA":
+        case "3":
             resultado = 3;
             break;
-        case "ALTA":
+        case "4":
             resultado = 4;
             break;
         default:
@@ -142,7 +152,7 @@ class observacion {
     constructor(codigo, descripcion, riesgoasignado, tipo, origen) {
         this.codigo = codigo;
         this.descripcion = descripcion;
-        this.riesgoasignado = riesgoasignado.toUpperCase();
+        this.riesgoasignado = riesgoasignado;
         this.tipo = tipo;
         this.origen = origen;
     }
@@ -157,129 +167,175 @@ const observaciones = [
 ];
 
 function cargar(valor1, valor2, valor3, valor4, valor5) {
-    return observaciones.push(new observacion(valor1, valor2, valor3, valor4, valor5));
+    if (valor5 === 3) {
+        return observaciones.push(new observacion(valor1, valor2, valor3, valor4, "ENTE REGULADOR"));
+    } else if (valor5 == 2) {
+        return observaciones.push(new observacion(valor1, valor2, valor3, valor4, "INTERNA"));
+    }
+    else {
+        return observaciones.push(new observacion(valor1, valor2, valor3, valor4, "OTROS"));
+    }
+
 }
 
-let respuesta = prompt("¿Desea calificar una observacion? Si/No").toUpperCase();
-while (respuesta == "SI") {
+document.querySelector(".botonCargar").addEventListener("click", function () {
     let temp = 0;
     let criticidad = 0;
-    let nvaObservacion = prompt("Ingrese la Observación a calificar").toUpperCase();
-    let tipoAuditoria = prompt("Ingrese tipo de auditoria (Operativa / Sistemas)").toUpperCase();;
-    if (tipoAuditoria == "OPERATIVA" || tipoAuditoria == "SISTEMAS") {
-        let operacional = prompt("Ingrese el valor de criticidad Operacional: Muy Alto / Alto / Medio / Bajo / Sin Impacto").toUpperCase();
+    let nvaObservacion = document.querySelector(".obsIngresada").value.toUpperCase();
+    if (!nvaObservacion) {
+        alert(`No se ingresó ninguna observación`);
+    } else {
+        let tAuditoria = document.querySelector('input[name="status"]:checked').value.toUpperCase();
+        let operacional = document.querySelector(".selectOperacional").value;
         temp = determinarOperacionalImpactoMonetario(operacional);
         if (temp != 5) {
             criticidad = criticidad + temp * ponderadorOperacional;
-            let informacion = prompt("Ingrese el valor de criticidad Información: Integridad / Confidencialidad / Confiabilidad / Eficiencia / Efectividad / Disponibilidad").toUpperCase();
+            let informacion = document.querySelector(".selectInformacion").value;
             temp = determinarInformacion(informacion);
             if (temp != 0) {
                 criticidad = criticidad + temp * ponderadorInformacion;
-                let impactoMonetario = prompt("Ingrese el valor de criticidad Impacto Monetario: Muy Alto / Alto / Medio / Bajo / Sin Impacto").toUpperCase();
+                let impactoMonetario = document.querySelector(".selectImpacto").value;
                 temp = determinarOperacionalImpactoMonetario(impactoMonetario);
                 if (temp != 5) {
                     criticidad = criticidad + temp * ponderadorImpactoMonetario;
-                    let cumplimiento = prompt("Ingrese el valor de criticidad Cumplimiento: Ente Regulador / Interna / Otros").toUpperCase();
+                    let cumplimiento = document.querySelector(".selectCumplimiento").value;
                     temp = determinarCumplimiento(cumplimiento);
                     if (temp != 0) {
-                        let antiguedad = parseInt(prompt("Ingrese la Antiguedad de la observacion en años:"));
-                        criticidad = criticidad + temp * ponderadorCumplimiento + determinarAntiguedad(antiguedad) * ponderadorAntiguedad;
-                        //alert(`${criticidad}`);
-                        let nivelCriticidad = calcularNivelCriticidad(criticidad);
-                        let ocurrencia = prompt("Ingrese el valor de la probabilidad de ocurrencia: Escasa / Baja / Media / Alta").toUpperCase();
-                        temp = calcularOcurrencia(ocurrencia);
-                        if (temp != 0) {
-                            //contador = contador + 1;
-                            let riesgo = temp * nivelCriticidad;
-                            if (riesgo <= 4) {
-                                cargar(observaciones.length + 1, nvaObservacion, "bajo", tipoAuditoria, cumplimiento);
-                            } else if (riesgo <= 11) {
-                                cargar(observaciones.length + 1, nvaObservacion, "medio", tipoAuditoria, cumplimiento);
-                            } else {
-                                cargar(observaciones.length + 1, nvaObservacion, "alto", tipoAuditoria, cumplimiento);
+                        criticidad = criticidad + temp * ponderadorCumplimiento;
+                        let antiguedad = document.querySelector(".selectAntiguedad").value;
+                        temp = determinarAntiguedad(antiguedad);
+                        if (temp != 3) {
+                            criticidad = criticidad + temp * ponderadorAntiguedad;
+                            let nivelCriticidad = calcularNivelCriticidad(criticidad);
+                            let ocurrencia = document.querySelector(".selectOcurrencia").value;
+                            temp = calcularOcurrencia(ocurrencia);
+                            if (temp != 0) {
+                                let riesgo = temp * nivelCriticidad;
+                                if (riesgo <= 4) {
+                                    cargar(observaciones.length + 1, nvaObservacion, "BAJO", tAuditoria, cumplimiento);
+                                } else if (riesgo <= 11) {
+                                    cargar(observaciones.length + 1, nvaObservacion, "MEDIO", tAuditoria, cumplimiento);
+                                } else {
+                                    cargar(observaciones.length + 1, nvaObservacion, "ALTO", tAuditoria, cumplimiento);
+                                }
                             }
+                            else {
+                                alert(`Debe seleccionar un parámetro Probabilidad de Ocurrencia correcto`);
+                            }
+                        } else {
+                            alert(`Debe seleccionar un Factor de Riesgo Antigüedad correcto`);
                         }
-                        else {
-                            alert(`Error en el parámetro Probabilidad de Ocurrencia (se ingresó ${ocurrencia}). No se puede calcular el riesgo`);
-                        }
-
                     } else {
-                        alert(`Error en el parámetro Factor de Riesgo Cumplimiento (se ingresó ${cumplimiento}). No se puede calcular el riesgo`);
+                        alert(`Debe seleccionar un Factor de Riesgo Cumplimiento correcto`);
                     }
                 } else {
-                    alert(`Error en el parámetro Factor de Riesgo Impacto Monetario (se ingresó ${impactoMonetario}). No se puede calcular el riesgo`);
+                    alert(`Debe seleccionar un Factor de Riesgo Impacto Monetario correcto`);
                 }
 
             } else {
-                alert(`Error en el parámetro Factor de Riesgo Información (se ingresó ${informacion}). No se puede calcular el riesgo`);
+                alert(`Debe seleccionar un Factor de Riesgo Información correcto`);
             }
 
         } else {
-            alert(`Error en el parámetro Factor de Riesgo Operacional (se ingresó ${operacional}). No se puede calcular el riesgo`);
+            alert(`Debe seleccionar un Factor de Riesgo Operacional correcto`);
         }
-    } else {
-        alert(`Error en el parámetro Tipo de Auditoria (se ingresó ${tipoAuditoria}). No se puede calcular el riesgo`);
     }
-    respuesta = prompt("¿Desea calificar otra observacion? Si/No").toUpperCase();
 }
-//console.log(observaciones);
+);
 
-/*if (observaciones.length != 0) {
-    respuesta = prompt("¿Desea imprimir el listado de observaciones?").toUpperCase();
-    if (respuesta == "SI") {
-        console.log("Listado de Observaciones");
-        for (const observacion of observaciones) {
-            if (observacion.tipo === "SISTEMAS") {
-                console.log(`La observación "${observacion.descripcion}", es de Riesgo ${observacion.riesgoasignado} y es una observación de Auditoria de ${observacion.tipo}`)
+function agregarhtml(arreglo) {
+    if (arreglo.length != 0) {
+        arreglo.forEach(i => {
+            let nodo = document.createElement("div");
+            if (i.tipo === "SISTEMAS") {
+                nodo.innerHTML = `<p>${i.codigo}: La observación "${i.descripcion}", es de Riesgo ${i.riesgoasignado} y es una observación de Auditoria de ${i.tipo}</p>`
             } else {
-                console.log(`La observación "${observacion.descripcion}", es de Riesgo ${observacion.riesgoasignado} y es una observación de Auditoria ${observacion.tipo}`)
+                nodo.innerHTML = `<p>${i.codigo}: La observación "${i.descripcion}", es de Riesgo ${i.riesgoasignado} y es una observación de Auditoria ${i.tipo}</p>`
             }
+            contenedor.appendChild(nodo);
+        })
+    } else {
+        let nodo = document.createElement("div");
+        nodo.innerHTML = `<p>No se encontraron observaciones para ese filtro aplicado</p>`
+        contenedor.appendChild(nodo);
+    }
+}
+
+document.querySelector(".generarReporte").addEventListener("click", () => {
+    let nodito = document.createElement("div");
+    nodito.innerHTML = `<h4> Reporte de Observaciones:</h4>`;
+    contenedor.appendChild(nodito);
+    let filtroListado1 = document.querySelector(".selectFRiesgo").value;
+    let filtroListado2 = document.querySelector(".selectFTipo").value;
+    //    let filtroListado3 = document.querySelector(".selectFTipo").value;
+    if (filtroListado1 === "1" && filtroListado2 === "1") {//todos
+        agregarhtml(observaciones);
+    } else if (filtroListado1 === "2" && filtroListado2 === "1") {
+        let respuesta = "ALTO";
+        const observacionesFiltradas = observaciones.filter(i => i.riesgoasignado === respuesta);
+        agregarhtml(observacionesFiltradas);
+    } else if (filtroListado1 === "3" && filtroListado2 === "1") {
+        let respuesta = "MEDIO";
+        const observacionesFiltradas = observaciones.filter(i => i.riesgoasignado === respuesta);
+        agregarhtml(observacionesFiltradas);
+    } else if (filtroListado1 === "4" && filtroListado2 === "1") {
+        let respuesta = "BAJO";
+        const observacionesFiltradas = observaciones.filter(i => i.riesgoasignado === respuesta);
+        agregarhtml(observacionesFiltradas);
+    } else if (filtroListado1 === "1" && filtroListado2 === "2") {
+        let respuestaTipo = "OPERATIVA";
+        const observacionesFiltradas = observaciones.filter(i => i.tipo === respuestaTipo);
+        agregarhtml(observacionesFiltradas);
+    } else if (filtroListado1 === "1" && filtroListado2 === "3") {
+        let respuestaTipo = "SISTEMAS";
+        const observacionesFiltradas = observaciones.filter(i => i.tipo === respuestaTipo);
+        agregarhtml(observacionesFiltradas);
+    } else if (filtroListado1 === "2" && filtroListado2 === "2") {
+        let respuestaTipo = "OPERATIVA";
+        let respuesta = "ALTO";
+        const observacionesFiltradas = observaciones.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
+        agregarhtml(observacionesFiltradas);
+    }
+    else if (filtroListado1 === "2" && filtroListado2 === "3") {
+        let respuestaTipo = "SISTEMAS";
+        let respuesta = "ALTO";
+        const observacionesFiltradas = observaciones.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
+        agregarhtml(observacionesFiltradas);
+    } else if (filtroListado1 === "3" && filtroListado2 === "2") {
+        let respuestaTipo = "OPERATIVA";
+        let respuesta = "MEDIO";
+        const observacionesFiltradas = observaciones.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
+        agregarhtml(observacionesFiltradas);
+    }
+    else if (filtroListado1 === "3" && filtroListado2 === "3") {
+        let respuestaTipo = "SISTEMAS";
+        let respuesta = "MEDIO";
+        const observacionesFiltradas = observaciones.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
+        agregarhtml(observacionesFiltradas);
+    } else if (filtroListado1 === "4" && filtroListado2 === "2") {
+        let respuestaTipo = "OPERATIVA";
+        let respuesta = "BAJO";
+        const observacionesFiltradas = observaciones.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
+        agregarhtml(observacionesFiltradas);
+    }
+    else if (filtroListado1 === "4" && filtroListado2 === "3") {
+        let respuestaTipo = "SISTEMAS";
+        let respuesta = "BAJO";
+        const observacionesFiltradas = observaciones.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
+        agregarhtml(observacionesFiltradas);
+    }
+}
+
+)
+
+document.querySelector(".botonBuscar").addEventListener("click", () => {
+    let respuesta = document.querySelector(".etiquetaBuscar").value.toUpperCase();
+    if (respuesta) {
+        if (observaciones.some(i => i.descripcion === respuesta)) {
+            alert(`La observacion "${respuesta}" existe en el listado de observaciones`);
+        } else {
+            alert(`La observacion "${respuesta}" NO existe en el listado de observaciones`);
         }
     }
-}*/
+})
 
-function imprimir(arreglo) {
-    arreglo.forEach(i => {
-        if (i.tipo === "SISTEMAS") {
-            console.log(`${i.codigo}: La observación "${i.descripcion}", es de Riesgo ${i.riesgoasignado} y es una observación de Auditoria de ${i.tipo}`);
-        } else {
-            console.log(`${i.codigo}: La observación "${i.descripcion}", es de Riesgo ${i.riesgoasignado} y es una observación de Auditoria ${i.tipo}`);
-        }
-    })
-}
-
-
-
-respuesta = prompt("Reporte por tipo de observacion: Operativa/ Sistemas").toUpperCase();
-if (respuesta == "OPERATIVA" || respuesta == "SISTEMAS") {
-    const observacionesFiltradas = observaciones.filter(i => i.tipo === respuesta);
-    console.log(`Listado de observaciones: ${respuesta}`)
-    imprimir(observacionesFiltradas);
-} else {
-    alert(`No se puede generar el reporte, error en el Tipo de Auditoria ingresado`);
-}
-
-respuesta = prompt("Reporte por riesgo de la observacion: Alto / Medio / Bajo").toUpperCase();
-if (respuesta == "BAJO" || respuesta == "MEDIO" || respuesta == "ALTO") {
-    const observacionesFiltradas = observaciones.filter(i => i.riesgoasignado === respuesta);
-    console.log(`Listado de observaciones: Riesgo ${respuesta}`)
-    imprimir(observacionesFiltradas);
-} else {
-    alert(`No se puede generar el reporte, error en el riesgo ingresado`);
-}
-
-respuesta = prompt("Reporte por origen de la observacion: Ente Regulador / Interna / Otros").toUpperCase();
-if (respuesta == "ENTE REGULADOR" || respuesta == "INTERNA" || respuesta == "OTROS") {
-    const observacionesFiltradas = observaciones.filter(i => i.origen === respuesta);
-    console.log(`Listado de observaciones: Origen ${respuesta}`)
-    imprimir(observacionesFiltradas);
-} else {
-    alert(`No se puede generar el reporte, error en el origen ingresado`);
-}
-
-respuesta = prompt("Ingrese la observacion a buscar").toUpperCase();
-if (observaciones.some(i => i.descripcion === respuesta)) {
-    console.log(`La observacion "${respuesta}" existe en el listado de observaciones`);
-} else {
-    console.log(`La observacion "${respuesta}" NO existe en el listado de observaciones`);
-}
