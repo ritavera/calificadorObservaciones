@@ -261,13 +261,31 @@ function agregarhtml(arreglo) {
     }
 }
 
+/* let nodito = document.createElement("div");
+
+const select1 = document.querySelector(".selectFRiesgo");
+    select1.addEventListener("change", () => {
+        nodito.innerHTML = `<h4> Riesgo: ${select1.value} </h4>`;
+        contenedor.appendChild(nodito);
+    })
+
+    const select2 = document.querySelector(".selectFTipo");
+    select2.addEventListener("change", () => {
+        
+        nodito.innerHTML = `<h4> Tipo de Observación: ${select2.value} </h4>`;
+        contenedor.appendChild(nodito);
+    })
+ */
+
 document.querySelector(".generarReporte").addEventListener("click", () => {
     let nodito = document.createElement("div");
     nodito.innerHTML = `<h4> Reporte de Observaciones:</h4>`;
     contenedor.appendChild(nodito);
+
     let filtroListado1 = document.querySelector(".selectFRiesgo").value;
     let filtroListado2 = document.querySelector(".selectFTipo").value;
     //    let filtroListado3 = document.querySelector(".selectFTipo").value;
+
     if (filtroListado1 === "1" && filtroListado2 === "1") {//todos
         agregarhtml(observaciones);
     } else if (filtroListado1 === "2" && filtroListado2 === "1") {
@@ -339,3 +357,9 @@ document.querySelector(".botonBuscar").addEventListener("click", () => {
     }
 })
 
+
+window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+        document.getElementById("formulario").reset();
+    }
+})
