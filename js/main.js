@@ -3,6 +3,8 @@ determinar el riesgo de las mismas en funciónn de factores de criticidad y a la
 Ademas se pueden:
 -generar reportes por  tipo, riesgo
 -Verificar si existe una determinada observacion en el listado de observaciones
+
+Para proximas entregas voy a dividirlo en 3 html
 */
 
 
@@ -165,6 +167,7 @@ const observaciones = [
     { codigo: 4, descripcion: "AUSENCIA DE PLAN ESTRATEGICO", riesgoasignado: "ALTO", tipo: "SISTEMAS", origen: "ENTE REGULADOR" },
 
 ];
+localStorage.setItem('observaciones', JSON.stringify(observaciones));
 
 function cargar(valor1, valor2, valor3, valor4, valor5) {
     if (valor5 === 3) {
@@ -183,7 +186,10 @@ document.querySelector(".botonCargar").addEventListener("click", function () {
     let criticidad = 0;
     let nvaObservacion = document.querySelector(".obsIngresada").value.toUpperCase();
     if (!nvaObservacion) {
-        alert(`No se ingresó ninguna observación`);
+        document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
+        document.querySelector(".modal_titulo").textContent = "ERROR";
+        document.querySelector(".mensaje_modal").textContent = "No se ingresó ninguna observación";
+        //alert(`No se ingresó ninguna observación`);
     } else {
         let tAuditoria = document.querySelector('input[name="status"]:checked').value.toUpperCase();
         let operacional = document.querySelector(".selectOperacional").value;
@@ -218,30 +224,54 @@ document.querySelector(".botonCargar").addEventListener("click", function () {
                                 } else {
                                     cargar(observaciones.length + 1, nvaObservacion, "ALTO", tAuditoria, cumplimiento);
                                 }
+                                localStorage.setItem('observaciones', JSON.stringify(observaciones));
                             }
                             else {
-                                alert(`Debe seleccionar un parámetro Probabilidad de Ocurrencia correcto`);
+                                document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
+                                document.querySelector(".modal_titulo").textContent = "ERROR";
+                                document.querySelector(".mensaje_modal").textContent = "Debe seleccionar un parámetro PROBABILIDAD DE OCURRENCIA correcto";
+                                //alert(`Debe seleccionar un parámetro Probabilidad de Ocurrencia correcto`);
                             }
                         } else {
-                            alert(`Debe seleccionar un Factor de Riesgo Antigüedad correcto`);
+                            document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
+                            document.querySelector(".modal_titulo").textContent = "ERROR";
+                            document.querySelector(".mensaje_modal").textContent = "Debe seleccionar un Factor de Riesgo ANTIGÜEDAD correcto";
+                            //alert(`Debe seleccionar un Factor de Riesgo Antigüedad correcto`);
                         }
                     } else {
-                        alert(`Debe seleccionar un Factor de Riesgo Cumplimiento correcto`);
+                        document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
+                        document.querySelector(".modal_titulo").textContent = "ERROR";
+                        document.querySelector(".mensaje_modal").textContent = "Debe seleccionar un Factor de Riesgo CUMPLIMIENTO correcto";
+                        // alert(`Debe seleccionar un Factor de Riesgo Cumplimiento correcto`);
                     }
                 } else {
-                    alert(`Debe seleccionar un Factor de Riesgo Impacto Monetario correcto`);
+                    document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
+                    document.querySelector(".modal_titulo").textContent = "ERROR";
+                    document.querySelector(".mensaje_modal").textContent = "Debe seleccionar un Factor de Riesgo IMPACTO MONERARIO correcto";
+                    //alert(`Debe seleccionar un Factor de Riesgo Impacto Monetario correcto`);
                 }
 
             } else {
-                alert(`Debe seleccionar un Factor de Riesgo Información correcto`);
+                document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
+                document.querySelector(".modal_titulo").textContent = "ERROR";
+                document.querySelector(".mensaje_modal").textContent = "Debe seleccionar un Factor de Riesgo INFORMACIÓN correcto";
+                //alert(`Debe seleccionar un Factor de Riesgo Información correcto`);
             }
 
         } else {
-            alert(`Debe seleccionar un Factor de Riesgo Operacional correcto`);
+            document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
+            document.querySelector(".modal_titulo").textContent = "ERROR";
+            document.querySelector(".mensaje_modal").textContent = "Debe seleccionar un Factor de Riesgo OPERACIONAL correcto";
+            //alert(`Debe seleccionar un Factor de Riesgo Operacional correcto`);
         }
     }
 }
 );
+
+document.getElementsByClassName("boton")[0].addEventListener("click", function (e) {
+    e.preventDefault();
+    document.getElementsByClassName("fondo_transparente")[0].style.display = "none"
+})
 
 function agregarhtml(arreglo) {
     if (arreglo.length != 0) {
@@ -261,22 +291,6 @@ function agregarhtml(arreglo) {
     }
 }
 
-/* let nodito = document.createElement("div");
-
-const select1 = document.querySelector(".selectFRiesgo");
-    select1.addEventListener("change", () => {
-        nodito.innerHTML = `<h4> Riesgo: ${select1.value} </h4>`;
-        contenedor.appendChild(nodito);
-    })
-
-    const select2 = document.querySelector(".selectFTipo");
-    select2.addEventListener("change", () => {
-        
-        nodito.innerHTML = `<h4> Tipo de Observación: ${select2.value} </h4>`;
-        contenedor.appendChild(nodito);
-    })
- */
-
 document.querySelector(".generarReporte").addEventListener("click", () => {
     let nodito = document.createElement("div");
     nodito.innerHTML = `<h4> Reporte de Observaciones:</h4>`;
@@ -285,74 +299,91 @@ document.querySelector(".generarReporte").addEventListener("click", () => {
     let filtroListado1 = document.querySelector(".selectFRiesgo").value;
     let filtroListado2 = document.querySelector(".selectFTipo").value;
     //    let filtroListado3 = document.querySelector(".selectFTipo").value;
-
+    const observacionesStorage = JSON.parse(localStorage.getItem("observaciones"));
     if (filtroListado1 === "1" && filtroListado2 === "1") {//todos
         agregarhtml(observaciones);
     } else if (filtroListado1 === "2" && filtroListado2 === "1") {
         let respuesta = "ALTO";
-        const observacionesFiltradas = observaciones.filter(i => i.riesgoasignado === respuesta);
+        //const observacionesFiltradas = observaciones.filter(i => i.riesgoasignado === respuesta);
+        const observacionesFiltradas = observacionesStorage.filter(i => i.riesgoasignado === respuesta);
         agregarhtml(observacionesFiltradas);
     } else if (filtroListado1 === "3" && filtroListado2 === "1") {
         let respuesta = "MEDIO";
-        const observacionesFiltradas = observaciones.filter(i => i.riesgoasignado === respuesta);
+        const observacionesFiltradas = observacionesStorage.filter(i => i.riesgoasignado === respuesta);
+        //const observacionesFiltradas = observaciones.filter(i => i.riesgoasignado === respuesta);
         agregarhtml(observacionesFiltradas);
     } else if (filtroListado1 === "4" && filtroListado2 === "1") {
         let respuesta = "BAJO";
-        const observacionesFiltradas = observaciones.filter(i => i.riesgoasignado === respuesta);
+        //const observacionesFiltradas = observaciones.filter(i => i.riesgoasignado === respuesta);
+        const observacionesFiltradas = observacionesStorage.filter(i => i.riesgoasignado === respuesta);
         agregarhtml(observacionesFiltradas);
     } else if (filtroListado1 === "1" && filtroListado2 === "2") {
         let respuestaTipo = "OPERATIVA";
-        const observacionesFiltradas = observaciones.filter(i => i.tipo === respuestaTipo);
+        const observacionesFiltradas = observacionesStorage.filter(i => i.tipo === respuestaTipo);
+        //const observacionesFiltradas = observaciones.filter(i => i.tipo === respuestaTipo);
         agregarhtml(observacionesFiltradas);
     } else if (filtroListado1 === "1" && filtroListado2 === "3") {
         let respuestaTipo = "SISTEMAS";
-        const observacionesFiltradas = observaciones.filter(i => i.tipo === respuestaTipo);
+        const observacionesFiltradas = observacionesStorage.filter(i => i.tipo === respuestaTipo);
+        //const observacionesFiltradas = observaciones.filter(i => i.tipo === respuestaTipo);
         agregarhtml(observacionesFiltradas);
     } else if (filtroListado1 === "2" && filtroListado2 === "2") {
         let respuestaTipo = "OPERATIVA";
         let respuesta = "ALTO";
-        const observacionesFiltradas = observaciones.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
+        //const observacionesFiltradas = observaciones.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
+        const observacionesFiltradas = observacionesStorage.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
         agregarhtml(observacionesFiltradas);
     }
     else if (filtroListado1 === "2" && filtroListado2 === "3") {
         let respuestaTipo = "SISTEMAS";
         let respuesta = "ALTO";
-        const observacionesFiltradas = observaciones.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
+        //const observacionesFiltradas = observaciones.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
+        const observacionesFiltradas = observacionesStorage.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
         agregarhtml(observacionesFiltradas);
     } else if (filtroListado1 === "3" && filtroListado2 === "2") {
         let respuestaTipo = "OPERATIVA";
         let respuesta = "MEDIO";
-        const observacionesFiltradas = observaciones.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
+        //const observacionesFiltradas = observaciones.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
+        const observacionesFiltradas = observacionesStorage.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
         agregarhtml(observacionesFiltradas);
     }
     else if (filtroListado1 === "3" && filtroListado2 === "3") {
         let respuestaTipo = "SISTEMAS";
         let respuesta = "MEDIO";
-        const observacionesFiltradas = observaciones.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
+        //const observacionesFiltradas = observaciones.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
+        const observacionesFiltradas = observacionesStorage.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
         agregarhtml(observacionesFiltradas);
     } else if (filtroListado1 === "4" && filtroListado2 === "2") {
         let respuestaTipo = "OPERATIVA";
         let respuesta = "BAJO";
-        const observacionesFiltradas = observaciones.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
+        //const observacionesFiltradas = observaciones.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
+        const observacionesFiltradas = observacionesStorage.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
         agregarhtml(observacionesFiltradas);
     }
     else if (filtroListado1 === "4" && filtroListado2 === "3") {
         let respuestaTipo = "SISTEMAS";
         let respuesta = "BAJO";
-        const observacionesFiltradas = observaciones.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
+        //const observacionesFiltradas = observaciones.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
+        const observacionesFiltradas = observacionesStorage.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
         agregarhtml(observacionesFiltradas);
     }
 }
 
 )
 
-document.querySelector(".botonBuscar").addEventListener("click", () => {
+document.querySelector(".botonBuscar").addEventListener("click", (e) => {
+    e.preventDefault();
+    const observacionesStorage = JSON.parse(localStorage.getItem("observaciones"));
     let respuesta = document.querySelector(".etiquetaBuscar").value.toUpperCase();
+    document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
+    document.querySelector(".modal_titulo").textContent = "RESULTADO DE LA BUSQUEDA";
     if (respuesta) {
-        if (observaciones.some(i => i.descripcion === respuesta)) {
-            alert(`La observacion "${respuesta}" existe en el listado de observaciones`);
+        if (observacionesStorage.some(i => i.descripcion === respuesta)) {
+            document.querySelector(".mensaje_modal").textContent = `La observacion "${respuesta}" existe en el listado de observaciones`;
+            //alert(`La observacion "${respuesta}" existe en el listado de observaciones`);
         } else {
-            alert(`La observacion "${respuesta}" NO existe en el listado de observaciones`);
+            document.querySelector(".mensaje_modal").textContent = `La observacion "${respuesta}" NO existe en el listado de observaciones`;
+            //alert(`La observacion "${respuesta}" NO existe en el listado de observaciones`);
         }
     }
 })
@@ -363,3 +394,4 @@ window.addEventListener("keydown", (e) => {
         document.getElementById("formulario").reset();
     }
 })
+
