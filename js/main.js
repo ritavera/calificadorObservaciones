@@ -5,6 +5,9 @@ Ademas se pueden:
 -Verificar si existe una determinada observacion en el listado de observaciones
 
 Para proximas entregas voy a dividirlo en 3 html
+
+utilice algunos operadores avanzados, en cuanto a Spread de objetos la aplique en una funcion, 
+pero despues lo voy a sacar al boton porque no creo que lo use.
 */
 
 
@@ -160,25 +163,28 @@ class observacion {
     }
 }
 // array de observaciones
-const observaciones = [
+/* const observaciones = [
     { codigo: 1, descripcion: "AUSENCIA DE PROCEDIMIENTO FORMALIZADO", riesgoasignado: "ALTO", tipo: "OPERATIVA", origen: "ENTE REGULADOR" },
     { codigo: 2, descripcion: "DEBILIDADES EN EL MANUAL DE USUARIO", riesgoasignado: "MEDIO", tipo: "SISTEMAS", origen: "INTERNA" },
     { codigo: 3, descripcion: "DEBILIDADES EN LA ASIGNACION DE PERFILES DE USUARIO", riesgoasignado: "BAJO", tipo: "SISTEMAS", origen: "OTROS" },
     { codigo: 4, descripcion: "AUSENCIA DE PLAN ESTRATEGICO", riesgoasignado: "ALTO", tipo: "SISTEMAS", origen: "ENTE REGULADOR" },
 
-];
-localStorage.setItem('observaciones', JSON.stringify(observaciones));
+]; */
+//localStorage.setItem('observaciones', JSON.stringify(observaciones));
+//const observaciones = [];
+const observaciones = JSON.parse(localStorage.getItem("observaciones"));
 
 function cargar(valor1, valor2, valor3, valor4, valor5) {
-    if (valor5 === 3) {
+    const orig = (valor5 === 3) ? "ENTE REGULADOR" : (valor5 == 2 ? "INTERNA" : "OTROS");
+    /* if (valor5 === 3) {
         return observaciones.push(new observacion(valor1, valor2, valor3, valor4, "ENTE REGULADOR"));
     } else if (valor5 == 2) {
         return observaciones.push(new observacion(valor1, valor2, valor3, valor4, "INTERNA"));
     }
     else {
         return observaciones.push(new observacion(valor1, valor2, valor3, valor4, "OTROS"));
-    }
-
+    } */
+    return observaciones.push(new observacion(valor1, valor2, valor3, valor4, orig));
 }
 
 document.querySelector(".botonCargar").addEventListener("click", function () {
@@ -189,34 +195,34 @@ document.querySelector(".botonCargar").addEventListener("click", function () {
         document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
         document.querySelector(".modal_titulo").textContent = "ERROR";
         document.querySelector(".mensaje_modal").textContent = "No se ingresó ninguna observación";
-        //alert(`No se ingresó ninguna observación`);
     } else {
         let tAuditoria = document.querySelector('input[name="status"]:checked').value.toUpperCase();
         let operacional = document.querySelector(".selectOperacional").value;
         temp = determinarOperacionalImpactoMonetario(operacional);
         if (temp != 5) {
-            criticidad = criticidad + temp * ponderadorOperacional;
+            criticidad += temp * ponderadorOperacional;
             let informacion = document.querySelector(".selectInformacion").value;
             temp = determinarInformacion(informacion);
             if (temp != 0) {
-                criticidad = criticidad + temp * ponderadorInformacion;
+                criticidad += temp * ponderadorInformacion;
                 let impactoMonetario = document.querySelector(".selectImpacto").value;
                 temp = determinarOperacionalImpactoMonetario(impactoMonetario);
                 if (temp != 5) {
-                    criticidad = criticidad + temp * ponderadorImpactoMonetario;
-                    let cumplimiento = document.querySelector(".selectCumplimiento").value;
-                    temp = determinarCumplimiento(cumplimiento);
+                    criticidad += temp * ponderadorImpactoMonetario;
+                    temp = determinarCumplimiento(document.querySelector(".selectCumplimiento").value);
                     if (temp != 0) {
-                        criticidad = criticidad + temp * ponderadorCumplimiento;
+                        let cumplimiento = temp;
+                        criticidad += temp * ponderadorCumplimiento;
                         let antiguedad = document.querySelector(".selectAntiguedad").value;
                         temp = determinarAntiguedad(antiguedad);
                         if (temp != 3) {
-                            criticidad = criticidad + temp * ponderadorAntiguedad;
+                            criticidad += temp * ponderadorAntiguedad;
                             let nivelCriticidad = calcularNivelCriticidad(criticidad);
                             let ocurrencia = document.querySelector(".selectOcurrencia").value;
                             temp = calcularOcurrencia(ocurrencia);
                             if (temp != 0) {
                                 let riesgo = temp * nivelCriticidad;
+                                //observaciones=JSON.parse(localStorage.getItem("observaciones"));
                                 if (riesgo <= 4) {
                                     cargar(observaciones.length + 1, nvaObservacion, "BAJO", tAuditoria, cumplimiento);
                                 } else if (riesgo <= 11) {
@@ -230,39 +236,33 @@ document.querySelector(".botonCargar").addEventListener("click", function () {
                                 document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
                                 document.querySelector(".modal_titulo").textContent = "ERROR";
                                 document.querySelector(".mensaje_modal").textContent = "Debe seleccionar un parámetro PROBABILIDAD DE OCURRENCIA correcto";
-                                //alert(`Debe seleccionar un parámetro Probabilidad de Ocurrencia correcto`);
                             }
                         } else {
                             document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
                             document.querySelector(".modal_titulo").textContent = "ERROR";
                             document.querySelector(".mensaje_modal").textContent = "Debe seleccionar un Factor de Riesgo ANTIGÜEDAD correcto";
-                            //alert(`Debe seleccionar un Factor de Riesgo Antigüedad correcto`);
                         }
                     } else {
                         document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
                         document.querySelector(".modal_titulo").textContent = "ERROR";
                         document.querySelector(".mensaje_modal").textContent = "Debe seleccionar un Factor de Riesgo CUMPLIMIENTO correcto";
-                        // alert(`Debe seleccionar un Factor de Riesgo Cumplimiento correcto`);
                     }
                 } else {
                     document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
                     document.querySelector(".modal_titulo").textContent = "ERROR";
                     document.querySelector(".mensaje_modal").textContent = "Debe seleccionar un Factor de Riesgo IMPACTO MONERARIO correcto";
-                    //alert(`Debe seleccionar un Factor de Riesgo Impacto Monetario correcto`);
                 }
 
             } else {
                 document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
                 document.querySelector(".modal_titulo").textContent = "ERROR";
                 document.querySelector(".mensaje_modal").textContent = "Debe seleccionar un Factor de Riesgo INFORMACIÓN correcto";
-                //alert(`Debe seleccionar un Factor de Riesgo Información correcto`);
             }
 
         } else {
             document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
             document.querySelector(".modal_titulo").textContent = "ERROR";
             document.querySelector(".mensaje_modal").textContent = "Debe seleccionar un Factor de Riesgo OPERACIONAL correcto";
-            //alert(`Debe seleccionar un Factor de Riesgo Operacional correcto`);
         }
     }
 }
@@ -273,16 +273,29 @@ document.getElementsByClassName("boton")[0].addEventListener("click", function (
     document.getElementsByClassName("fondo_transparente")[0].style.display = "none"
 })
 
+function imprimirDetalle({ codigo, descripcion, riesgoasignado, tipo, origen }) {
+    let nodo = document.createElement("div");
+    tipo === "SISTEMAS" ? nodo.innerHTML = `<p>${codigo}: La observación ${descripcion}, es de Riesgo ${riesgoasignado} y es una observación de Auditoria de ${tipo}</p>` : nodo.innerHTML = `<p>${codigo}: La observación ${descripcion}, es de Riesgo ${riesgoasignado} y es una observación de Auditoria ${tipo}</p>`;
+    /* if (tipo === "SISTEMAS") {
+        nodo.innerHTML = `<p>${codigo}: La observación ${descripcion}, es de Riesgo ${riesgoasignado} y es una observación de Auditoria de ${tipo}</p>`
+    } else {
+        nodo.innerHTML = `<p>${codigo}: La observación ${descripcion}, es de Riesgo ${riesgoasignado} y es una observación de Auditoria ${tipo}</p>`
+    } */
+    contenedor.appendChild(nodo);
+}
+
 function agregarhtml(arreglo) {
     if (arreglo.length != 0) {
         arreglo.forEach(i => {
-            let nodo = document.createElement("div");
-            if (i.tipo === "SISTEMAS") {
-                nodo.innerHTML = `<p>${i.codigo}: La observación "${i.descripcion}", es de Riesgo ${i.riesgoasignado} y es una observación de Auditoria de ${i.tipo}</p>`
+            imprimirDetalle(i);
+            /* let nodo = document.createElement("div");
+            let { codigo, descripcion, riesgoasignado, tipo, origen} = i;
+            if (tipo === "SISTEMAS") {
+                nodo.innerHTML = `<p>${codigo}: La observación ${descripcion}, es de Riesgo ${riesgoasignado} y es una observación de Auditoria de ${tipo}</p>`
             } else {
-                nodo.innerHTML = `<p>${i.codigo}: La observación "${i.descripcion}", es de Riesgo ${i.riesgoasignado} y es una observación de Auditoria ${i.tipo}</p>`
-            }
-            contenedor.appendChild(nodo);
+                nodo.innerHTML = `<p>${codigo}: La observación ${descripcion}, es de Riesgo ${riesgoasignado} y es una observación de Auditoria ${tipo}</p>`
+            } 
+            contenedor.appendChild(nodo); */
         })
     } else {
         let nodo = document.createElement("div");
@@ -295,81 +308,69 @@ document.querySelector(".generarReporte").addEventListener("click", () => {
     let nodito = document.createElement("div");
     nodito.innerHTML = `<h4> Reporte de Observaciones:</h4>`;
     contenedor.appendChild(nodito);
-
     let filtroListado1 = document.querySelector(".selectFRiesgo").value;
     let filtroListado2 = document.querySelector(".selectFTipo").value;
     //    let filtroListado3 = document.querySelector(".selectFTipo").value;
     const observacionesStorage = JSON.parse(localStorage.getItem("observaciones"));
     if (filtroListado1 === "1" && filtroListado2 === "1") {//todos
-        agregarhtml(observaciones);
+        agregarhtml(observacionesStorage);
     } else if (filtroListado1 === "2" && filtroListado2 === "1") {
         let respuesta = "ALTO";
-        //const observacionesFiltradas = observaciones.filter(i => i.riesgoasignado === respuesta);
         const observacionesFiltradas = observacionesStorage.filter(i => i.riesgoasignado === respuesta);
         agregarhtml(observacionesFiltradas);
     } else if (filtroListado1 === "3" && filtroListado2 === "1") {
         let respuesta = "MEDIO";
         const observacionesFiltradas = observacionesStorage.filter(i => i.riesgoasignado === respuesta);
-        //const observacionesFiltradas = observaciones.filter(i => i.riesgoasignado === respuesta);
         agregarhtml(observacionesFiltradas);
     } else if (filtroListado1 === "4" && filtroListado2 === "1") {
         let respuesta = "BAJO";
-        //const observacionesFiltradas = observaciones.filter(i => i.riesgoasignado === respuesta);
         const observacionesFiltradas = observacionesStorage.filter(i => i.riesgoasignado === respuesta);
         agregarhtml(observacionesFiltradas);
     } else if (filtroListado1 === "1" && filtroListado2 === "2") {
         let respuestaTipo = "OPERATIVA";
         const observacionesFiltradas = observacionesStorage.filter(i => i.tipo === respuestaTipo);
-        //const observacionesFiltradas = observaciones.filter(i => i.tipo === respuestaTipo);
         agregarhtml(observacionesFiltradas);
     } else if (filtroListado1 === "1" && filtroListado2 === "3") {
         let respuestaTipo = "SISTEMAS";
         const observacionesFiltradas = observacionesStorage.filter(i => i.tipo === respuestaTipo);
-        //const observacionesFiltradas = observaciones.filter(i => i.tipo === respuestaTipo);
         agregarhtml(observacionesFiltradas);
     } else if (filtroListado1 === "2" && filtroListado2 === "2") {
         let respuestaTipo = "OPERATIVA";
         let respuesta = "ALTO";
-        //const observacionesFiltradas = observaciones.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
         const observacionesFiltradas = observacionesStorage.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
         agregarhtml(observacionesFiltradas);
     }
     else if (filtroListado1 === "2" && filtroListado2 === "3") {
         let respuestaTipo = "SISTEMAS";
         let respuesta = "ALTO";
-        //const observacionesFiltradas = observaciones.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
         const observacionesFiltradas = observacionesStorage.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
         agregarhtml(observacionesFiltradas);
     } else if (filtroListado1 === "3" && filtroListado2 === "2") {
         let respuestaTipo = "OPERATIVA";
         let respuesta = "MEDIO";
-        //const observacionesFiltradas = observaciones.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
         const observacionesFiltradas = observacionesStorage.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
         agregarhtml(observacionesFiltradas);
     }
     else if (filtroListado1 === "3" && filtroListado2 === "3") {
         let respuestaTipo = "SISTEMAS";
         let respuesta = "MEDIO";
-        //const observacionesFiltradas = observaciones.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
         const observacionesFiltradas = observacionesStorage.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
         agregarhtml(observacionesFiltradas);
     } else if (filtroListado1 === "4" && filtroListado2 === "2") {
         let respuestaTipo = "OPERATIVA";
         let respuesta = "BAJO";
-        //const observacionesFiltradas = observaciones.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
         const observacionesFiltradas = observacionesStorage.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
         agregarhtml(observacionesFiltradas);
     }
     else if (filtroListado1 === "4" && filtroListado2 === "3") {
         let respuestaTipo = "SISTEMAS";
         let respuesta = "BAJO";
-        //const observacionesFiltradas = observaciones.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
         const observacionesFiltradas = observacionesStorage.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
         agregarhtml(observacionesFiltradas);
     }
 }
-
 )
+
 
 document.querySelector(".botonBuscar").addEventListener("click", (e) => {
     e.preventDefault();
@@ -377,15 +378,33 @@ document.querySelector(".botonBuscar").addEventListener("click", (e) => {
     let respuesta = document.querySelector(".etiquetaBuscar").value.toUpperCase();
     document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
     document.querySelector(".modal_titulo").textContent = "RESULTADO DE LA BUSQUEDA";
+    /*     respuesta && observacionesStorage.some(i => i.descripcion === respuesta) ? document.querySelector(".mensaje_modal").textContent = `La observacion ${respuesta} existe en el listado de observaciones </p>` : document.querySelector(".mensaje_modal").textContent = `La observacion ${respuesta} NO existe en el listado de observaciones </p>`;
+    } */
+
     if (respuesta) {
         if (observacionesStorage.some(i => i.descripcion === respuesta)) {
-            document.querySelector(".mensaje_modal").textContent = `La observacion "${respuesta}" existe en el listado de observaciones`;
-            //alert(`La observacion "${respuesta}" existe en el listado de observaciones`);
+            document.querySelector(".mensaje_modal").textContent = `La observacion ${respuesta} existe en el listado de observaciones`;
+            const obsBuscada = observacionesStorage.filter(i => i.descripcion === respuesta);
+            const objetoBuscado = {
+                ...obsBuscada[0],
+                fecha: Date()
+            }
+            localStorage.setItem('observacionesBuscadas', JSON.stringify(objetoBuscado));
         } else {
-            document.querySelector(".mensaje_modal").textContent = `La observacion "${respuesta}" NO existe en el listado de observaciones`;
-            //alert(`La observacion "${respuesta}" NO existe en el listado de observaciones`);
+            document.querySelector(".mensaje_modal").textContent = `La observacion ${respuesta} NO existe en el listado de observaciones`;
+
         }
     }
+})
+
+document.querySelector(".buscados").addEventListener("click", () => {
+    let nodito = document.createElement("div");
+    nodito.innerHTML = `<h4> Ultimas observación buscada:</h4>`;
+    contenedor.appendChild(nodito);
+    const buscadas = JSON.parse(localStorage.getItem("observacionesBuscadas"));
+    let nodo = document.createElement("div");
+    nodo.innerHTML = `<p> La observacion ${buscadas.descripcion} fue la ultima buscada el dia ${buscadas.fecha}</p>`;
+    contenedor.appendChild(nodo);
 })
 
 
