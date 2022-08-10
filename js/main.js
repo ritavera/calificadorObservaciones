@@ -8,6 +8,7 @@ Para proximas entregas voy a dividirlo en 3 html
 
 utilice algunos operadores avanzados, en cuanto a Spread de objetos la aplique en una funcion, 
 pero despues lo voy a sacar al boton porque no creo que lo use.
+
 */
 
 
@@ -192,9 +193,17 @@ document.querySelector(".botonCargar").addEventListener("click", function () {
     let criticidad = 0;
     let nvaObservacion = document.querySelector(".obsIngresada").value.toUpperCase();
     if (!nvaObservacion) {
-        document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
-        document.querySelector(".modal_titulo").textContent = "ERROR";
-        document.querySelector(".mensaje_modal").textContent = "No se ingresó ninguna observación";
+        /*         document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
+                document.querySelector(".modal_titulo").textContent = "ERROR";
+                document.querySelector(".mensaje_modal").textContent = "No se ingresó ninguna observación";
+         */
+        Swal.fire({
+            title: 'Error!',
+            text: 'No se ingresó ninguna observación',
+            icon: 'error',
+            confirmButtonText: 'OK',
+            confirmButtonColor: 'rgb(55, 128, 211)'
+        })
     } else {
         let tAuditoria = document.querySelector('input[name="status"]:checked').value.toUpperCase();
         let operacional = document.querySelector(".selectOperacional").value;
@@ -233,46 +242,88 @@ document.querySelector(".botonCargar").addEventListener("click", function () {
                                 localStorage.setItem('observaciones', JSON.stringify(observaciones));
                             }
                             else {
-                                document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
+                                /* document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
                                 document.querySelector(".modal_titulo").textContent = "ERROR";
-                                document.querySelector(".mensaje_modal").textContent = "Debe seleccionar un parámetro PROBABILIDAD DE OCURRENCIA correcto";
+                                document.querySelector(".mensaje_modal").textContent = "Debe seleccionar un parámetro PROBABILIDAD DE OCURRENCIA correcto"; */
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: 'Debe seleccionar un parámetro PROBABILIDAD DE OCURRENCIA correcto',
+                                    icon: 'error',
+                                    confirmButtonText: 'OK',
+                                    confirmButtonColor: 'rgb(55, 128, 211)'
+                                })
                             }
                         } else {
-                            document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
+                            /* document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
                             document.querySelector(".modal_titulo").textContent = "ERROR";
-                            document.querySelector(".mensaje_modal").textContent = "Debe seleccionar un Factor de Riesgo ANTIGÜEDAD correcto";
+                            document.querySelector(".mensaje_modal").textContent = "Debe seleccionar un Factor de Riesgo ANTIGÜEDAD correcto"; */
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'Debe seleccionar un Factor de Riesgo ANTIGÜEDAD correcto',
+                                icon: 'error',
+                                confirmButtonText: 'OK',
+                                confirmButtonColor: 'rgb(55, 128, 211)'
+                            })
                         }
                     } else {
-                        document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
+            /*             document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
                         document.querySelector(".modal_titulo").textContent = "ERROR";
                         document.querySelector(".mensaje_modal").textContent = "Debe seleccionar un Factor de Riesgo CUMPLIMIENTO correcto";
+             */            Swal.fire({
+                        title: 'Error!',
+                        text: 'Debe seleccionar un Factor de Riesgo CUMPLIMIENTO correcto',
+                        icon: 'error',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: 'rgb(55, 128, 211)'
+                    })
                     }
                 } else {
-                    document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
+                    /* document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
                     document.querySelector(".modal_titulo").textContent = "ERROR";
-                    document.querySelector(".mensaje_modal").textContent = "Debe seleccionar un Factor de Riesgo IMPACTO MONERARIO correcto";
+                    document.querySelector(".mensaje_modal").textContent = "Debe seleccionar un Factor de Riesgo IMPACTO MONERARIO correcto"; */
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Debe seleccionar un Factor de Riesgo IMPACTO MONERARIO correcto',
+                        icon: 'error',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: 'rgb(55, 128, 211)'
+                    })
                 }
 
             } else {
-                document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
+                /* document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
                 document.querySelector(".modal_titulo").textContent = "ERROR";
-                document.querySelector(".mensaje_modal").textContent = "Debe seleccionar un Factor de Riesgo INFORMACIÓN correcto";
+                document.querySelector(".mensaje_modal").textContent = "Debe seleccionar un Factor de Riesgo INFORMACIÓN correcto"; */
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Debe seleccionar un Factor de Riesgo INFORMACIÓN correcto',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: 'rgb(55, 128, 211)'
+                })
             }
 
         } else {
-            document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
+            /* document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
             document.querySelector(".modal_titulo").textContent = "ERROR";
-            document.querySelector(".mensaje_modal").textContent = "Debe seleccionar un Factor de Riesgo OPERACIONAL correcto";
+            document.querySelector(".mensaje_modal").textContent = "Debe seleccionar un Factor de Riesgo OPERACIONAL correcto"; */
+            Swal.fire({
+                title: 'Error!',
+                text: 'Debe seleccionar un Factor de Riesgo OPERACIONAL correcto',
+                icon: 'error',
+                confirmButtonText: 'OK',
+                confirmButtonColor: 'rgb(55, 128, 211)'
+            })
         }
     }
 }
 );
 
-document.getElementsByClassName("boton")[0].addEventListener("click", function (e) {
+/* document.getElementsByClassName("boton")[0].addEventListener("click", function (e) {
     e.preventDefault();
     document.getElementsByClassName("fondo_transparente")[0].style.display = "none"
 })
-
+ */
 function imprimirDetalle({ codigo, descripcion, riesgoasignado, tipo, origen }) {
     let nodo = document.createElement("div");
     tipo === "SISTEMAS" ? nodo.innerHTML = `<p>${codigo}: La observación ${descripcion}, es de Riesgo ${riesgoasignado} y es una observación de Auditoria de ${tipo}</p>` : nodo.innerHTML = `<p>${codigo}: La observación ${descripcion}, es de Riesgo ${riesgoasignado} y es una observación de Auditoria ${tipo}</p>`;
@@ -286,6 +337,9 @@ function imprimirDetalle({ codigo, descripcion, riesgoasignado, tipo, origen }) 
 
 function agregarhtml(arreglo) {
     if (arreglo.length != 0) {
+        let nodito = document.createElement("div");
+        nodito.innerHTML = `<h4> Reporte de Observaciones:</h4>`;
+        contenedor.appendChild(nodito);
         arreglo.forEach(i => {
             imprimirDetalle(i);
             /* let nodo = document.createElement("div");
@@ -298,16 +352,20 @@ function agregarhtml(arreglo) {
             contenedor.appendChild(nodo); */
         })
     } else {
-        let nodo = document.createElement("div");
+        /* let nodo = document.createElement("div");
         nodo.innerHTML = `<p>No se encontraron observaciones para ese filtro aplicado</p>`
-        contenedor.appendChild(nodo);
+        contenedor.appendChild(nodo); */
+        Swal.fire({
+            title: 'Error!',
+            text: 'No se encontraron observaciones para ese filtro aplicado',
+            icon: 'error',
+            confirmButtonText: 'OK',
+            confirmButtonColor: 'rgb(55, 128, 211)'
+        })
     }
 }
 
 document.querySelector(".generarReporte").addEventListener("click", () => {
-    let nodito = document.createElement("div");
-    nodito.innerHTML = `<h4> Reporte de Observaciones:</h4>`;
-    contenedor.appendChild(nodito);
     let filtroListado1 = document.querySelector(".selectFRiesgo").value;
     let filtroListado2 = document.querySelector(".selectFTipo").value;
     //    let filtroListado3 = document.querySelector(".selectFTipo").value;
@@ -376,14 +434,20 @@ document.querySelector(".botonBuscar").addEventListener("click", (e) => {
     e.preventDefault();
     const observacionesStorage = JSON.parse(localStorage.getItem("observaciones"));
     let respuesta = document.querySelector(".etiquetaBuscar").value.toUpperCase();
-    document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
-    document.querySelector(".modal_titulo").textContent = "RESULTADO DE LA BUSQUEDA";
-    /*     respuesta && observacionesStorage.some(i => i.descripcion === respuesta) ? document.querySelector(".mensaje_modal").textContent = `La observacion ${respuesta} existe en el listado de observaciones </p>` : document.querySelector(".mensaje_modal").textContent = `La observacion ${respuesta} NO existe en el listado de observaciones </p>`;
-    } */
-
+    /*     document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
+        document.querySelector(".modal_titulo").textContent = "RESULTADO DE LA BUSQUEDA";
+     */    /*     respuesta && observacionesStorage.some(i => i.descripcion === respuesta) ? document.querySelector(".mensaje_modal").textContent = `La observacion ${respuesta} existe en el listado de observaciones </p>` : document.querySelector(".mensaje_modal").textContent = `La observacion ${respuesta} NO existe en el listado de observaciones </p>`;
+       } */
     if (respuesta) {
         if (observacionesStorage.some(i => i.descripcion === respuesta)) {
-            document.querySelector(".mensaje_modal").textContent = `La observacion ${respuesta} existe en el listado de observaciones`;
+            /* document.querySelector(".mensaje_modal").textContent = `La observacion ${respuesta} existe en el listado de observaciones`; */
+            Swal.fire({
+                title: 'SI EXISTE',
+                text: `La observacion "${respuesta}" existe en el listado de observaciones`,
+                icon: 'success',
+                confirmButtonText: 'OK',
+                confirmButtonColor: 'rgb(55, 128, 211)'
+            })
             const obsBuscada = observacionesStorage.filter(i => i.descripcion === respuesta);
             const objetoBuscado = {
                 ...obsBuscada[0],
@@ -391,8 +455,14 @@ document.querySelector(".botonBuscar").addEventListener("click", (e) => {
             }
             localStorage.setItem('observacionesBuscadas', JSON.stringify(objetoBuscado));
         } else {
-            document.querySelector(".mensaje_modal").textContent = `La observacion ${respuesta} NO existe en el listado de observaciones`;
-
+            /* document.querySelector(".mensaje_modal").textContent = `La observacion ${respuesta} NO existe en el listado de observaciones`; */
+            Swal.fire({
+                title: 'NO EXISTE',
+                text: `La observacion "${respuesta}" no existe en el listado de observaciones`,
+                icon: 'error',
+                confirmButtonText: 'OK',
+                confirmButtonColor: 'rgb(55, 128, 211)'
+            })
         }
     }
 })
