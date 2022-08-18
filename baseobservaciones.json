@@ -1,0 +1,86 @@
+[
+    {
+        "codigo": 1001,
+        "descripcion": "AUSENCIA DE PROCEDIMIENTO FORMALIZADO",
+        "riesgoasignado": "ALTO",
+        "tipo": "OPERATIVA",
+        "origen": "ENTE REGULADOR"
+    },
+    {
+        "codigo": 1002,
+        "descripcion": "DEBILIDADES EN EL MANUAL DE USUARIO",
+        "riesgoasignado": "MEDIO",
+        "tipo": "SISTEMAS",
+        "origen": "INTERNA"
+    },
+    {
+        "codigo": 1003,
+        "descripcion": "DEBILIDADES EN LA ASIGNACION DE PERFILES DE USUARIO",
+        "riesgoasignado": "BAJO",
+        "tipo": "SISTEMAS",
+        "origen": "OTROS"
+    },
+    {
+        "codigo": 1004,
+        "descripcion": "AUSENCIA DE PLAN ESTRATEGICO",
+        "riesgoasignado": "ALTO",
+        "tipo": "SISTEMAS",
+        "origen": "ENTE REGULADOR"
+    },
+    {
+        "codigo": 1005,
+        "descripcion": "AUSENCIA DE PROCEDIMIENTO FORMALIZADO 1",
+        "riesgoasignado": "ALTO",
+        "tipo": "OPERATIVA",
+        "origen": "ENTE REGULADOR"
+    },
+    {
+        "codigo": 1006,
+        "descripcion": "DEBILIDADES EN EL MANUAL DE USUARIO 1",
+        "riesgoasignado": "MEDIO",
+        "tipo": "SISTEMAS",
+        "origen": "INTERNA"
+    },
+    {
+        "codigo": 1007,
+        "descripcion": "DEBILIDADES EN LA ASIGNACION DE PERFILES DE USUARIO 1",
+        "riesgoasignado": "BAJO",
+        "tipo": "SISTEMAS",
+        "origen": "OTROS"
+    },
+    {
+        "codigo": 1008,
+        "descripcion": "AUSENCIA DE PLAN ESTRATEGICO 1",
+        "riesgoasignado": "ALTO",
+        "tipo": "SISTEMAS",
+        "origen": "ENTE REGULADOR"
+    },
+    {
+        "codigo": 1009,
+        "descripcion": "AUSENCIA DE PROCEDIMIENTO FORMALIZADO 2",
+        "riesgoasignado": "ALTO",
+        "tipo": "OPERATIVA",
+        "origen": "ENTE REGULADOR"
+    },
+    {
+        "codigo": 1010,
+        "descripcion": "DEBILIDADES EN EL MANUAL DE USUARIO 2",
+        "riesgoasignado": "MEDIO",
+        "tipo": "SISTEMAS",
+        "origen": "INTERNA"
+    },
+    {
+        "codigo": 1011,
+        "descripcion": "DEBILIDADES EN LA ASIGNACION DE PERFILES DE USUARIO 2",
+        "riesgoasignado": "BAJO",
+        "tipo": "SISTEMAS",
+        "origen": "OTROS"
+    },
+    {
+        "codigo": 1012,
+        "descripcion": "AUSENCIA DE PLAN ESTRATEGICO 2",
+        "riesgoasignado": "ALTO",
+        "tipo": "SISTEMAS",
+        "origen": "ENTE REGULADOR"
+    }
+]

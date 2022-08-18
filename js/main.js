@@ -4,10 +4,13 @@ Ademas se pueden:
 -generar reportes por  tipo, riesgo
 -Verificar si existe una determinada observacion en el listado de observaciones
 
-Para proximas entregas voy a dividirlo en 3 html
-
 utilice algunos operadores avanzados, en cuanto a Spread de objetos la aplique en una funcion, 
 pero despues lo voy a sacar al boton porque no creo que lo use.
+
+coloque un boton para tomar los datos del archivo json que contiene la tabla de observaciones
+Para el trabajo final seguro te voy a estar molestando para consultas, voy a tratar de hacerlo 
+todo en un html y que no quede muy feo y quiero agregarle algun grafico que sirva para mostrar 
+los filtros.
 
 */
 
@@ -23,6 +26,7 @@ let ponderadorMenor = 20;
 let ponderadorMarcado = 40;
 let ponderadorAlto = 60;
 let contenedor = document.getElementById("contenedor");
+let codInterno;
 
 function determinarAntiguedad(valor) {
     let resultado = 3;
@@ -153,7 +157,7 @@ function calcularOcurrencia(valor) {
 
 }
 
-
+//const observaciones = [];
 class observacion {
     constructor(codigo, descripcion, riesgoasignado, tipo, origen) {
         this.codigo = codigo;
@@ -172,19 +176,43 @@ class observacion {
 
 ]; */
 //localStorage.setItem('observaciones', JSON.stringify(observaciones));
-//const observaciones = [];
-const observaciones = JSON.parse(localStorage.getItem("observaciones"));
+
+
+//let observaciones = JSON.parse(localStorage.getItem("observaciones"));
+let observaciones = [];
+
+
+if (JSON.parse(localStorage.getItem("observaciones")) === null) {
+    codInterno = 0;
+    //const observaciones = [];    
+}
+else {
+    observaciones = JSON.parse(localStorage.getItem("observaciones"));
+}
+
+document.querySelector(".agregarObservaciones").addEventListener("click", () => {
+    fetch("./baseobservaciones.json")
+        .then(response => response.json())
+        .then(result => {
+            result.forEach(obs => {
+                observaciones.push(new observacion(obs.codigo, obs.descripcion, obs.riesgoasignado, obs.tipo, obs.origen));
+            })
+            localStorage.setItem('observaciones', JSON.stringify(observaciones));
+        })
+        .catch(error => console.log(error))
+        .finally(() => {
+            Swal.fire({
+                title: 'Proceso de carga masiva de observaciones',
+                text: `Se cargaron todas la observaciones`,
+                icon: 'success',
+                confirmButtonText: 'OK',
+                confirmButtonColor: 'rgb(55, 128, 211)'
+            })
+        })
+})
 
 function cargar(valor1, valor2, valor3, valor4, valor5) {
     const orig = (valor5 === 3) ? "ENTE REGULADOR" : (valor5 == 2 ? "INTERNA" : "OTROS");
-    /* if (valor5 === 3) {
-        return observaciones.push(new observacion(valor1, valor2, valor3, valor4, "ENTE REGULADOR"));
-    } else if (valor5 == 2) {
-        return observaciones.push(new observacion(valor1, valor2, valor3, valor4, "INTERNA"));
-    }
-    else {
-        return observaciones.push(new observacion(valor1, valor2, valor3, valor4, "OTROS"));
-    } */
     return observaciones.push(new observacion(valor1, valor2, valor3, valor4, orig));
 }
 
@@ -193,10 +221,6 @@ document.querySelector(".botonCargar").addEventListener("click", function () {
     let criticidad = 0;
     let nvaObservacion = document.querySelector(".obsIngresada").value.toUpperCase();
     if (!nvaObservacion) {
-        /*         document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
-                document.querySelector(".modal_titulo").textContent = "ERROR";
-                document.querySelector(".mensaje_modal").textContent = "No se ingresó ninguna observación";
-         */
         Swal.fire({
             title: 'Error!',
             text: 'No se ingresó ninguna observación',
@@ -231,13 +255,18 @@ document.querySelector(".botonCargar").addEventListener("click", function () {
                             temp = calcularOcurrencia(ocurrencia);
                             if (temp != 0) {
                                 let riesgo = temp * nivelCriticidad;
-                                //observaciones=JSON.parse(localStorage.getItem("observaciones"));
+                                if (codInterno === 0) {
+                                    codInterno++;
+                                }
+                                else {
+                                    codInterno = JSON.parse(localStorage.getItem("observaciones")).length + 1;
+                                }
                                 if (riesgo <= 4) {
-                                    cargar(observaciones.length + 1, nvaObservacion, "BAJO", tAuditoria, cumplimiento);
+                                    cargar(codInterno, nvaObservacion, "BAJO", tAuditoria, cumplimiento);
                                 } else if (riesgo <= 11) {
-                                    cargar(observaciones.length + 1, nvaObservacion, "MEDIO", tAuditoria, cumplimiento);
+                                    cargar(codInterno, nvaObservacion, "MEDIO", tAuditoria, cumplimiento);
                                 } else {
-                                    cargar(observaciones.length + 1, nvaObservacion, "ALTO", tAuditoria, cumplimiento);
+                                    cargar(codInterno, nvaObservacion, "ALTO", tAuditoria, cumplimiento);
                                 }
                                 localStorage.setItem('observaciones', JSON.stringify(observaciones));
                             }
@@ -437,7 +466,7 @@ document.querySelector(".botonBuscar").addEventListener("click", (e) => {
     /*     document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
         document.querySelector(".modal_titulo").textContent = "RESULTADO DE LA BUSQUEDA";
      */    /*     respuesta && observacionesStorage.some(i => i.descripcion === respuesta) ? document.querySelector(".mensaje_modal").textContent = `La observacion ${respuesta} existe en el listado de observaciones </p>` : document.querySelector(".mensaje_modal").textContent = `La observacion ${respuesta} NO existe en el listado de observaciones </p>`;
-       } */
+} */
     if (respuesta) {
         if (observacionesStorage.some(i => i.descripcion === respuesta)) {
             /* document.querySelector(".mensaje_modal").textContent = `La observacion ${respuesta} existe en el listado de observaciones`; */
@@ -473,7 +502,11 @@ document.querySelector(".buscados").addEventListener("click", () => {
     contenedor.appendChild(nodito);
     const buscadas = JSON.parse(localStorage.getItem("observacionesBuscadas"));
     let nodo = document.createElement("div");
-    nodo.innerHTML = `<p> La observacion ${buscadas.descripcion} fue la ultima buscada el dia ${buscadas.fecha}</p>`;
+    if (buscadas === null) {
+        nodo.innerHTML = `<p> No se realizó ninguna busqueda aún</p>`;
+    } else {
+        nodo.innerHTML = `<p> La observacion ${buscadas.descripcion} fue la ultima buscada el dia ${buscadas.fecha}</p>`;
+    }
     contenedor.appendChild(nodo);
 })
 
