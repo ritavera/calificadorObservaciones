@@ -13,211 +13,48 @@
 </head>
 
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg bg-light">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="#">
-                    <img src="./img/logo solo.jpg" alt="" width="55" height="45">
-                </a>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="index.html">Carga de Observaciones</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="">Generar Reportes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="">Seguimiento de Observaciones</a>
-                        </li>
-                    </ul>
-                    <form class="d-flex" role="search">
-                        <input class="form-control me-2 etiquetaBuscar" type="search" placeholder="Search"
-                            aria-label="Search">
-                        <button class="btn btn-outline-success botonBuscar" type="submit">Buscar</button>
-                    </form>
-                </div>
-            </div>
-        </nav>
-    </header>
 
-    <!-- <div class="fondo_transparente">
-        <div class="modal">
-            <div class="modal_titulo"></div>
-            <div class="modal_mensaje">
-                <p class="mensaje_modal"></p>
+    <div class="wrapper">
+        <div class="sidebar">
+            <h2>Seguimiento de Observaciones de Auditoria</h2>
+            <ul>
+                <li><a href="#" class="cargaindividual"><i class="fas fa-solid fa-pen-to-square"></i> Carga
+                        Individual</a></li>
+                <li><a href="#" class="cargamasiva"><i class="fas fa-solid fa-sheet-plastic"></i> Carga Masiva</a></li>
+                <li><a href="#" class="reportes"><i class="fas fa-solid fa-file-circle-check"></i> Reportes</a></li>
+                <li><a href="#" class="estadistica"><i class="fa-sharp fa-solid fa-chart-simple"></i> Estadísticas</a>
+                </li>
+            </ul>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end p-2">
+                <button class="btn btn-primary me-md-2 botonConfig" type="button">Cargar
+                    Observación</button>
             </div>
-            <div class="modal_botones">
-                <a href="" class="boton" type="submit">ACEPTAR</a>
+
+            <div class="social_media">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
             </div>
         </div>
-    </div> -->
 
-    <main>
-        <section class="container mt-3 mb-3">
-            <form action="" id="formulario">
-                <h1>Seguimiento Observaciones de Auditoria</h1>
-                <h2>Datos de la nueva Observación (presionar ESC para limpiar los campos)</h2>
-                <section class="obs p-3">
-                    <div class="input-group">
-                        <span class="input-group-text">Observación</span>
-                        <textarea class="form-control obsIngresada" aria-label="With textarea"></textarea>
-                    </div>
-                    <div class="container p-2">
-                        <label>Tipo de Auditoria</label><br>
-                        <label> <input type="radio" name="status" value="operativa" id="operativa" checked> Auditoria
-                            Operativa</label>
-                        <br>
-                        <label></label><input type="radio" name="status" value="sistemas" id="sistemas"> Auditoria de
-                        Sistemas</label>
-                        <br>
-                    </div>
-                    <div class="container p-4">
-                        <h3>Factores de Criticidad</h3>
-                        <div class="container p-2">
-                            <select class="form-select form-select-lg mb-3 selectOperacional"
-                                aria-label=".form-select-lg example">
-                                <option selected>Operacional</option>
-                                <option value="1">Muy Alto</option>
-                                <option value="2">Alto</option>
-                                <option value="3">Medio</option>
-                                <option value="4">Bajo</option>
-                                <option value="5">Sin Impacto</option>
-                            </select>
-
-                            <select class="form-select form-select-lg mb-3 selectInformacion"
-                                aria-label=".form-select-lg example">
-                                <option selected>Información</option>
-                                <option value="1">Integridad</option>
-                                <option value="2">Confidencialidad</option>
-                                <option value="3">Confiabilidad</option>
-                                <option value="4">Eficiencia</option>
-                                <option value="5">Efectividad</option>
-                                <option value="6">Disponibilidadad</option>
-                            </select>
-
-                            <select class="form-select form-select-lg mb-3 selectImpacto"
-                                aria-label=".form-select-lg example">
-                                <option selected>Impacto Monetario</option>
-                                <option value="1">Muy Alto</option>
-                                <option value="2">Alto</option>
-                                <option value="3">Medio</option>
-                                <option value="4">Bajo</option>
-                                <option value="5">Sin Impacto</option>
-                            </select>
-
-                            <select class="form-select form-select-lg mb-3 selectCumplimiento"
-                                aria-label=".form-select-lg example">
-                                <option selected>Cumplimiento</option>
-                                <option value="1">Ente Regulador</option>
-                                <option value="2">Interna</option>
-                                <option value="3">Otros</option>
-                            </select>
-
-                            <select class="form-select form-select-lg mb-3 selectAntiguedad"
-                                aria-label=".form-select-lg example">
-                                <option selected>Antigüedad</option>
-                                <option value="1">Mayor o igual a 18 meses</option>
-                                <option value="2">Mayor a doce meses y menor a 18 meses</option>
-                                <option value="3">Menor o igual a 12 meses</option>
-                            </select>
-
-                        </div>
-                    </div>
-                    <div class="container p-4">
-                        <h3>Probabilidad de Ocurrencia</h3>
-                        <select class="form-select form-select-lg mb-3 selectOcurrencia"
-                            aria-label=".form-select-lg example">
-                            <option selected>Ocurrencia</option>
-                            <option value="1">Poco Frecuente</option>
-                            <option value="2">Frecuencia Normal</option>
-                            <option value="3">Frecuente</option>
-                            <option value="4">Muy Frecuente</option>
-                        </select>
-                    </div>
-
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end p-2">
-                        <button class="btn btn-primary me-md-2 botonCargar" type="button">Cargar Observación</button>
-                    </div>
-                </section>
-                <section class="filtros p-3">
-                    <h2> Seleccione el reporte que desea obtener</h2>
-                    <div class="container p-4">
-                        <h3>Filtrar por Riesgo</h3>
-                        <select class="form-select form-select-lg mb-3 selectFRiesgo"
-                            aria-label=".form-select-lg example">
-                            <option value="1" selected>Todos los Riesgos</option>
-                            <option value="2">Alto</option>
-                            <option value="3">Medio</option>
-                            <option value="4">Bajo</option>
-                        </select>
-                    </div>
-                    <div class="container p-4">
-                        <h3>Filtrar por Tipo</h3>
-                        <select class="form-select form-select-lg mb-3 selectFTipo"
-                            aria-label=".form-select-lg example">
-                            <option value="1" selected>Operativa y Sistemas</option>
-                            <option value="2">Operativa</option>
-                            <option value="3">Sistemas</option>
-                        </select>
-                    </div>
-                    <!-- <div class="container p-4">
-                    <h3>Filtrar por Origen</h3>
-                    <select class="form-select form-select-lg mb-3 selectFOrigen"
-                        aria-label=".form-select-lg example">
-                        <option value="1" selected>Todos los Riesgos</option>
-                        <option value="2">Ente Regulador</option>
-                        <option value="3">Interna</option>
-                        <option value="4">Otros</option>
-                    </select>
-                </div> -->
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end p-2">
-                        <button class="btn btn-primary me-md-2 generarReporte" type="button">Generar Reporte</button>
-                    </div>
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end p-2">
-                        <button class="btn btn-primary me-md-2 agregarObservaciones" type="button">Agregar Observaciones JSON</button>
-                    </div>
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end p-2">
-                        <button class="btn btn-primary me-md-2 buscados" type="button">Mostrar ultimas observaciones
-                            buscadas</button>
-                    </div>
-                    <div id="contenedor">
-                        <!-- <h4> Reporte de Observaciones:</h4>
-                        <table id="tabla">
-                                 <tr>
-                                <th>Descripción</th>
-                                <th>Origen </th>
-                                <th>Tipo</th>
-                                <th>Riesgo</th>
-                            </tr> 
-                        </table> -->
-                    </div>
-                </section>
-            </form>
-        </section>
-    </main>
-    <footer>
-        <div class="direcciones">
-            <h3>DONDE ESTAMOS</h3>
-            <h4>Santiago del Estero - Argentina</h4>
-        </div>
-        <div class="direcciones">
-            <h3>SIGUENOS EN</h3>
-            <div class="iconos">
-                <a href="https://facebook.com" target="_blank"> <i class="fa-brands fa-facebook"></i>
-                </a>
-                <a href="https://instagram.com" target="_blank"> <i class="fa-brands fa-instagram"></i>
-                </a>
-                <a href="https://twitter.com" target="_blank"> <i class="fa-brands fa-twitter"></i>
-                </a>
+        <div class="main_content">
+            <div class="header">
+                <h2 class="titulo"></h2>
+            </div>
+            <div class="info" id="divsuno">
+            </div>
+            <div class="info" id="divsdos">
+            </div>
+            <div class="info" id="divstres">
             </div>
         </div>
-    </footer>
-
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="./js/main.js"></script>
 </body>
 

@@ -1,21 +1,16 @@
 /* La idea es cargar las observaciones de auditoria, para ello se solicitan datos para la carga inicial y se
-determinar el riesgo de las mismas en funciónn de factores de criticidad y a la probabilidad de ocurrencia.
-Ademas se pueden:
+determinar el riesgo de las mismas en función de factores de criticidad (usando ponderadores a partir de una 
+metodologia dada ) y a la probabilidad de ocurrencia.
+Además se pueden:
 -generar reportes por  tipo, riesgo
--Verificar si existe una determinada observacion en el listado de observaciones
+-generar estadisdisticas por riesgo
+-Carga masiva de observaciones
 
-utilice algunos operadores avanzados, en cuanto a Spread de objetos la aplique en una funcion, 
-pero despues lo voy a sacar al boton porque no creo que lo use.
+Se toman datos del archivo json que contiene la tabla de observaciones
 
-coloque un boton para tomar los datos del archivo json que contiene la tabla de observaciones
-Para el trabajo final seguro te voy a estar molestando para consultas, voy a tratar de hacerlo 
-todo en un html y que no quede muy feo y quiero agregarle algun grafico que sirva para mostrar 
-los filtros.
-
+La idea es agregar mas campos para poder construir una base de observaciones que pueda ser utilizada para 
+seguimiento de auditoria
 */
-
-
-
 let ponderadorOperacional = 5;
 let ponderadorInformacion = 4;
 let ponderadorImpactoMonetario = 3;
@@ -25,9 +20,32 @@ let ponderadorInsignificante = 10;
 let ponderadorMenor = 20;
 let ponderadorMarcado = 40;
 let ponderadorAlto = 60;
-let contenedor = document.getElementById("contenedor");
-let codInterno;
 
+let divsuno = document.getElementById("divsuno");
+let uno = document.createElement("div");
+divsuno.appendChild(uno);
+
+let divsdos = document.getElementById("divsdos");
+let dos = document.createElement("div");
+divsdos.appendChild(dos);
+
+let divstres = document.getElementById("divstres");
+let tres = document.createElement("div");
+divstres.appendChild(tres);
+let canvas = document.createElement("canvas");
+tres.appendChild(canvas);
+
+let estaUno = 0;
+let estaDos = 0;
+let estaTres = 0;
+
+const boton = document.querySelector(".botonConfig");
+boton.style.visibility = "visible";
+
+let codInterno = 0;
+
+
+//Funciones utilizadas para calcular el riesgo de una observación ingresada
 function determinarAntiguedad(valor) {
     let resultado = 3;
     switch (valor) {
@@ -168,29 +186,139 @@ class observacion {
     }
 }
 // array de observaciones
-/* const observaciones = [
-    { codigo: 1, descripcion: "AUSENCIA DE PROCEDIMIENTO FORMALIZADO", riesgoasignado: "ALTO", tipo: "OPERATIVA", origen: "ENTE REGULADOR" },
-    { codigo: 2, descripcion: "DEBILIDADES EN EL MANUAL DE USUARIO", riesgoasignado: "MEDIO", tipo: "SISTEMAS", origen: "INTERNA" },
-    { codigo: 3, descripcion: "DEBILIDADES EN LA ASIGNACION DE PERFILES DE USUARIO", riesgoasignado: "BAJO", tipo: "SISTEMAS", origen: "OTROS" },
-    { codigo: 4, descripcion: "AUSENCIA DE PLAN ESTRATEGICO", riesgoasignado: "ALTO", tipo: "SISTEMAS", origen: "ENTE REGULADOR" },
-
-]; */
-//localStorage.setItem('observaciones', JSON.stringify(observaciones));
-
-
-//let observaciones = JSON.parse(localStorage.getItem("observaciones"));
 let observaciones = [];
 
-
 if (JSON.parse(localStorage.getItem("observaciones")) === null) {
+    //cuando el localStorage esta vacio
     codInterno = 0;
-    //const observaciones = [];    
 }
 else {
     observaciones = JSON.parse(localStorage.getItem("observaciones"));
 }
 
-document.querySelector(".agregarObservaciones").addEventListener("click", () => {
+// Para eliminar lo que se va creando en el html
+function eliminar() {
+    uno.remove();
+    dos.remove();
+    //canvas.remove();
+    tres.remove();
+}
+
+// Es una funcion utilizada en el cada vez que se quiere cargar una observacion y se quiere calcular el riesgo
+// es llamada al inicio
+function cargaAsignacion() {
+    if (estaUno !== 1) {
+        boton.style.visibility = "visible";
+        eliminar();
+        canvas.remove();
+        document.querySelector(".titulo").textContent = "Carga de observación y asignación de Riesgo"
+        uno = document.createElement("div");
+        uno.classList.add("uno");
+        divsuno.appendChild(uno);
+        uno.innerHTML = `<form action="" id="formulario">
+        <section class="obs p-1">
+    <div class="input-group">
+        <span class="input-group-text">Observación</span>
+        <textarea class="form-control obsIngresada" aria-label="With textarea"></textarea>
+    </div>
+    <div class="container p-1">
+        <label>Tipo de Auditoria</label><br>
+        <label> <input type="radio" name="status" value="operativa" id="operativa" checked>
+            Auditoria Operativa</label>
+        <br>
+        <label><input type="radio" name="status" value="sistemas" id="sistemas">
+            Auditoria de Sistemas</label>
+        <br>
+    </div>
+    <div class="container p-1">
+        <h3>Factores de Criticidad</h3>
+        <div class="container p-1">
+            <select class="form-select form-select-lg mb-2 selectOperacional"
+                aria-label=".form-select-lg example">
+                <option selected>Operacional</option>
+                <option value="1">Muy Alto</option>
+                <option value="2">Alto</option>
+                <option value="3">Medio</option>
+                <option value="4">Bajo</option>
+                <option value="5">Sin Impacto</option>
+            </select>
+
+            <select class="form-select form-select-lg mb-2 selectInformacion"
+                aria-label=".form-select-lg example">
+                <option selected>Información</option>
+                <option value="1">Integridad</option>
+                <option value="2">Confidencialidad</option>
+                <option value="3">Confiabilidad</option>
+                <option value="4">Eficiencia</option>
+                <option value="5">Efectividad</option>
+                <option value="6">Disponibilidadad</option>
+            </select>
+
+            <select class="form-select form-select-lg mb-2 selectImpacto"
+                aria-label=".form-select-lg example">
+                <option selected>Impacto Monetario</option>
+                <option value="1">Muy Alto</option>
+                <option value="2">Alto</option>
+                <option value="3">Medio</option>
+                <option value="4">Bajo</option>
+                <option value="5">Sin Impacto</option>
+            </select>
+
+            <select class="form-select form-select-lg mb-2 selectCumplimiento"
+                aria-label=".form-select-lg example">
+                <option selected>Cumplimiento</option>
+                <option value="1">Ente Regulador</option>
+                <option value="2">Interna</option>
+                <option value="3">Otros</option>
+            </select>
+
+            <select class="form-select form-select-lg mb-2 selectAntiguedad"
+                aria-label=".form-select-lg example">
+                <option selected>Antigüedad</option>
+                <option value="1">Mayor o igual a 18 meses</option>
+                <option value="2">Mayor a doce meses y menor a 18 meses</option>
+                <option value="3">Menor o igual a 12 meses</option>
+            </select>
+        </div>
+    </div>
+    <div class="container p-1">
+        <h3>Probabilidad de Ocurrencia</h3>
+        <select class="form-select form-select-lg mb-2 selectOcurrencia"
+            aria-label=".form-select-lg example">
+            <option selected>Ocurrencia</option>
+            <option value="1">Poco Frecuente</option>
+            <option value="2">Frecuencia Normal</option>
+            <option value="3">Frecuente</option>
+            <option value="4">Muy Frecuente</option>
+        </select>
+    </div>
+    </section>
+</form>
+<div id="contenedor"> </div>`;
+        document.querySelector(".botonConfig").textContent = "Cargar Observación";
+        let contenedor = document.getElementById("contenedor");
+    }
+    estaDos = 0;
+    estaUno = 1;
+    estaTres = 0;
+}
+
+cargaAsignacion();
+
+//Evento on click "cargaindividual"
+document.querySelector(".cargaindividual").addEventListener("click", () => {
+    cargaAsignacion();
+})
+
+//Evento on click "cargamasiva"
+document.querySelector(".cargamasiva").addEventListener("click", () => {
+    boton.style.visibility = "hidden";
+    eliminar();
+    canvas.remove();
+    estaDos = 0;
+    estaUno = 0;
+    estaTres = 0;
+    document.querySelector(".titulo").textContent = "Carga masiva de observaciones";
     fetch("./baseobservaciones.json")
         .then(response => response.json())
         .then(result => {
@@ -198,12 +326,13 @@ document.querySelector(".agregarObservaciones").addEventListener("click", () => 
                 observaciones.push(new observacion(obs.codigo, obs.descripcion, obs.riesgoasignado, obs.tipo, obs.origen));
             })
             localStorage.setItem('observaciones', JSON.stringify(observaciones));
+            codInterno = JSON.parse(localStorage.getItem("observaciones")).length;
         })
         .catch(error => console.log(error))
         .finally(() => {
             Swal.fire({
                 title: 'Proceso de carga masiva de observaciones',
-                text: `Se cargaron todas la observaciones`,
+                text: `Se cargaron todas las observaciones`,
                 icon: 'success',
                 confirmButtonText: 'OK',
                 confirmButtonColor: 'rgb(55, 128, 211)'
@@ -211,108 +340,307 @@ document.querySelector(".agregarObservaciones").addEventListener("click", () => 
         })
 })
 
+//Evento on click "reportes"
+document.querySelector(".reportes").addEventListener("click", () => {
+    if (estaDos !== 1) {
+        boton.style.visibility = "visible";
+        eliminar();
+        canvas.remove();
+        document.querySelector(".titulo").textContent = "Generar Reporte";
+        dos = document.createElement("div");
+        dos.classList.add("dos");
+        divsdos.appendChild(dos);
+        dos.innerHTML = `<div class="container p-1">
+        <h3>Filtrar por Riesgo</h3>
+        <select class="form-select form-select-lg mb-2 selectFRiesgo"
+            aria-label=".form-select-lg example">
+            <option value="1" selected>Todos los Riesgos</option>
+            <option value="2">Alto</option>
+            <option value="3">Medio</option>
+            <option value="4">Bajo</option>
+        </select>
+    </div>
+    <div class="container p-1">
+        <h3>Filtrar por Tipo</h3>
+        <select class="form-select form-select-lg mb-2 selectFTipo"
+            aria-label=".form-select-lg example">
+            <option value="1" selected>Operativa y Sistemas</option>
+            <option value="2">Operativa</option>
+            <option value="3">Sistemas</option>
+        </select>
+    </div>
+    
+    <div id="contenedor"> </div>`;
+        let contenedor = document.getElementById("contenedor");
+        document.querySelector(".botonConfig").textContent = "Generar Reporte";
+    }
+    estaDos = 1;
+    estaUno = 0;
+    estaTres = 0;
+})
+
+//Evento on click "estadistica"
+document.querySelector(".estadistica").addEventListener("click", () => {
+    if (estaTres !== 1) {
+        eliminar();
+        //canvas.remove();
+        document.querySelector(".titulo").textContent = "Estadísticas";
+        tres = document.createElement("div");
+        tres.classList.add("tres");
+        divstres.appendChild(tres);
+
+        let canvas = document.createElement("canvas");
+        tres.appendChild(canvas);
+        canvas.id = "myChart";
+
+        const ctx = document.getElementById('myChart');
+
+        //Calculo de la cantidad de observaciones de cada Riesgo Asignado
+        let alto = 0;
+        let medio = 0;
+        let bajo = 0;
+
+        if (JSON.parse(localStorage.getItem("observaciones")) !== null) {
+            //cuando el localStorage no esta vacio
+            const observacionesStorage = JSON.parse(localStorage.getItem("observaciones"));
+            const obsRiesgoAlto = observacionesStorage.filter(i => i.riesgoasignado === "ALTO");
+            alto = obsRiesgoAlto.length;
+            const obsRiesgoMedio = observacionesStorage.filter(i => i.riesgoasignado === "MEDIO");
+            medio = obsRiesgoMedio.length;
+            const obsRiesgoBajo = observacionesStorage.filter(i => i.riesgoasignado === "BAJO");
+            bajo = obsRiesgoBajo.length;
+        }
+        else {
+            Swal.fire({
+                title: 'Error!',
+                text: 'No se encontraron observaciones',
+                icon: 'error',
+                confirmButtonText: 'OK',
+                confirmButtonColor: 'rgb(55, 128, 211)'
+            })
+        }
+
+        const myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Alto', 'Medio', 'Bajo'],
+                datasets: [{
+                    label: 'Observaciones clasificadas por Riesgo',
+                    data: [alto, medio, bajo],
+                    backgroundColor: [
+                        'rgb(204, 18, 18)',
+                        'rgb(201, 204, 18)',
+                        'rgb(41, 185, 60)'
+                    ],
+                    borderColor: [
+                        'rgb(204, 18, 18)',
+                        'rgb(201, 204, 18)',
+                        'rgb(41, 185, 60)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        boton.style.visibility = "hidden";
+    }
+    estaDos = 0;
+    estaUno = 0;
+    estaTres = 1;
+})
+
+//Funcion para agregar los elementos al array de objetos durante la carga individual
 function cargar(valor1, valor2, valor3, valor4, valor5) {
     const orig = (valor5 === 3) ? "ENTE REGULADOR" : (valor5 == 2 ? "INTERNA" : "OTROS");
     return observaciones.push(new observacion(valor1, valor2, valor3, valor4, orig));
 }
 
-document.querySelector(".botonCargar").addEventListener("click", function () {
-    let temp = 0;
-    let criticidad = 0;
-    let nvaObservacion = document.querySelector(".obsIngresada").value.toUpperCase();
-    if (!nvaObservacion) {
-        Swal.fire({
-            title: 'Error!',
-            text: 'No se ingresó ninguna observación',
-            icon: 'error',
-            confirmButtonText: 'OK',
-            confirmButtonColor: 'rgb(55, 128, 211)'
-        })
+// Hay un solo boton para Cargar observacion individual y Generar Reportes
+document.querySelector(".botonConfig").addEventListener("click", function () {
+    if (document.querySelector(".botonConfig").textContent === "Generar Reporte") {
+        //Reporte
+        let filtroListado1 = document.querySelector(".selectFRiesgo").value;
+        let filtroListado2 = document.querySelector(".selectFTipo").value;
+        //    let filtroListado3 = document.querySelector(".selectFTipo").value;
+        //Verifico si hay observaciones en el Storage
+        if (JSON.parse(localStorage.getItem("observaciones")) !== null) {
+            const observacionesStorage = JSON.parse(localStorage.getItem("observaciones"));
+            if (filtroListado1 === "1" && filtroListado2 === "1") {//todos
+                agregarhtml(observacionesStorage);
+            } else if (filtroListado1 === "2" && filtroListado2 === "1") {
+                let respuesta = "ALTO";
+                const observacionesFiltradas = observacionesStorage.filter(i => i.riesgoasignado === respuesta);
+                agregarhtml(observacionesFiltradas);
+            } else if (filtroListado1 === "3" && filtroListado2 === "1") {
+                let respuesta = "MEDIO";
+                const observacionesFiltradas = observacionesStorage.filter(i => i.riesgoasignado === respuesta);
+                agregarhtml(observacionesFiltradas);
+            } else if (filtroListado1 === "4" && filtroListado2 === "1") {
+                let respuesta = "BAJO";
+                const observacionesFiltradas = observacionesStorage.filter(i => i.riesgoasignado === respuesta);
+                agregarhtml(observacionesFiltradas);
+            } else if (filtroListado1 === "1" && filtroListado2 === "2") {
+                let respuestaTipo = "OPERATIVA";
+                const observacionesFiltradas = observacionesStorage.filter(i => i.tipo === respuestaTipo);
+                agregarhtml(observacionesFiltradas);
+            } else if (filtroListado1 === "1" && filtroListado2 === "3") {
+                let respuestaTipo = "SISTEMAS";
+                const observacionesFiltradas = observacionesStorage.filter(i => i.tipo === respuestaTipo);
+                agregarhtml(observacionesFiltradas);
+            } else if (filtroListado1 === "2" && filtroListado2 === "2") {
+                let respuestaTipo = "OPERATIVA";
+                let respuesta = "ALTO";
+                const observacionesFiltradas = observacionesStorage.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
+                agregarhtml(observacionesFiltradas);
+            }
+            else if (filtroListado1 === "2" && filtroListado2 === "3") {
+                let respuestaTipo = "SISTEMAS";
+                let respuesta = "ALTO";
+                const observacionesFiltradas = observacionesStorage.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
+                agregarhtml(observacionesFiltradas);
+            } else if (filtroListado1 === "3" && filtroListado2 === "2") {
+                let respuestaTipo = "OPERATIVA";
+                let respuesta = "MEDIO";
+                const observacionesFiltradas = observacionesStorage.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
+                agregarhtml(observacionesFiltradas);
+            }
+            else if (filtroListado1 === "3" && filtroListado2 === "3") {
+                let respuestaTipo = "SISTEMAS";
+                let respuesta = "MEDIO";
+                const observacionesFiltradas = observacionesStorage.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
+                agregarhtml(observacionesFiltradas);
+            } else if (filtroListado1 === "4" && filtroListado2 === "2") {
+                let respuestaTipo = "OPERATIVA";
+                let respuesta = "BAJO";
+                const observacionesFiltradas = observacionesStorage.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
+                agregarhtml(observacionesFiltradas);
+            }
+            else if (filtroListado1 === "4" && filtroListado2 === "3") {
+                let respuestaTipo = "SISTEMAS";
+                let respuesta = "BAJO";
+                const observacionesFiltradas = observacionesStorage.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
+                agregarhtml(observacionesFiltradas);
+            }
+        }
+        else {
+            Swal.fire({
+                title: 'Error!',
+                text: 'No se encontraron observaciones',
+                icon: 'error',
+                confirmButtonText: 'OK',
+                confirmButtonColor: 'rgb(55, 128, 211)'
+            })
+        }
     } else {
-        let tAuditoria = document.querySelector('input[name="status"]:checked').value.toUpperCase();
-        let operacional = document.querySelector(".selectOperacional").value;
-        temp = determinarOperacionalImpactoMonetario(operacional);
-        if (temp != 5) {
-            criticidad += temp * ponderadorOperacional;
-            let informacion = document.querySelector(".selectInformacion").value;
-            temp = determinarInformacion(informacion);
-            if (temp != 0) {
-                criticidad += temp * ponderadorInformacion;
-                let impactoMonetario = document.querySelector(".selectImpacto").value;
-                temp = determinarOperacionalImpactoMonetario(impactoMonetario);
-                if (temp != 5) {
-                    criticidad += temp * ponderadorImpactoMonetario;
-                    temp = determinarCumplimiento(document.querySelector(".selectCumplimiento").value);
-                    if (temp != 0) {
-                        let cumplimiento = temp;
-                        criticidad += temp * ponderadorCumplimiento;
-                        let antiguedad = document.querySelector(".selectAntiguedad").value;
-                        temp = determinarAntiguedad(antiguedad);
-                        if (temp != 3) {
-                            criticidad += temp * ponderadorAntiguedad;
-                            let nivelCriticidad = calcularNivelCriticidad(criticidad);
-                            let ocurrencia = document.querySelector(".selectOcurrencia").value;
-                            temp = calcularOcurrencia(ocurrencia);
-                            if (temp != 0) {
-                                let riesgo = temp * nivelCriticidad;
-                                if (codInterno === 0) {
-                                    codInterno++;
+        //Carga de observacion individual
+        let temp = 0;
+        let criticidad = 0;
+        let nvaObservacion = document.querySelector(".obsIngresada").value.toUpperCase();
+        if (!nvaObservacion) {
+            Swal.fire({
+                title: 'Error!',
+                text: 'No se ingresó ninguna observación',
+                icon: 'error',
+                confirmButtonText: 'OK',
+                confirmButtonColor: 'rgb(55, 128, 211)'
+            })
+        } else {
+            let tAuditoria = document.querySelector('input[name="status"]:checked').value.toUpperCase();
+            let operacional = document.querySelector(".selectOperacional").value;
+            temp = determinarOperacionalImpactoMonetario(operacional);
+            if (temp != 5) {
+                criticidad += temp * ponderadorOperacional;
+                let informacion = document.querySelector(".selectInformacion").value;
+                temp = determinarInformacion(informacion);
+                if (temp != 0) {
+                    criticidad += temp * ponderadorInformacion;
+                    let impactoMonetario = document.querySelector(".selectImpacto").value;
+                    temp = determinarOperacionalImpactoMonetario(impactoMonetario);
+                    if (temp != 5) {
+                        criticidad += temp * ponderadorImpactoMonetario;
+                        temp = determinarCumplimiento(document.querySelector(".selectCumplimiento").value);
+                        if (temp != 0) {
+                            let cumplimiento = temp;
+                            criticidad += temp * ponderadorCumplimiento;
+                            let antiguedad = document.querySelector(".selectAntiguedad").value;
+                            temp = determinarAntiguedad(antiguedad);
+                            if (temp != 3) {
+                                criticidad += temp * ponderadorAntiguedad;
+                                let nivelCriticidad = calcularNivelCriticidad(criticidad);
+                                let ocurrencia = document.querySelector(".selectOcurrencia").value;
+                                temp = calcularOcurrencia(ocurrencia);
+                                if (temp != 0) {
+                                    let riesgo = temp * nivelCriticidad;
+                                    if (codInterno === 0) {
+                                        codInterno++;
+                                    }
+                                    else {
+                                        codInterno = JSON.parse(localStorage.getItem("observaciones")).length + 1;
+                                    }
+                                    if (riesgo <= 4) {
+                                        cargar(codInterno, nvaObservacion, "BAJO", tAuditoria, cumplimiento);
+                                    } else if (riesgo <= 11) {
+                                        cargar(codInterno, nvaObservacion, "MEDIO", tAuditoria, cumplimiento);
+                                    } else {
+                                        cargar(codInterno, nvaObservacion, "ALTO", tAuditoria, cumplimiento);
+                                    }
+                                    localStorage.setItem('observaciones', JSON.stringify(observaciones));
+                                    Swal.fire({
+                                        title: 'Exito!',
+                                        text: 'Nueva observación cargada',
+                                        icon: 'success',
+                                        confirmButtonText: 'OK',
+                                        confirmButtonColor: 'rgb(55, 128, 211)'
+                                    })
+                                    document.getElementById("formulario").reset();
                                 }
                                 else {
-                                    codInterno = JSON.parse(localStorage.getItem("observaciones")).length + 1;
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text: 'Debe seleccionar un parámetro PROBABILIDAD DE OCURRENCIA correcto',
+                                        icon: 'error',
+                                        confirmButtonText: 'OK',
+                                        confirmButtonColor: 'rgb(55, 128, 211)'
+                                    })
                                 }
-                                if (riesgo <= 4) {
-                                    cargar(codInterno, nvaObservacion, "BAJO", tAuditoria, cumplimiento);
-                                } else if (riesgo <= 11) {
-                                    cargar(codInterno, nvaObservacion, "MEDIO", tAuditoria, cumplimiento);
-                                } else {
-                                    cargar(codInterno, nvaObservacion, "ALTO", tAuditoria, cumplimiento);
-                                }
-                                localStorage.setItem('observaciones', JSON.stringify(observaciones));
-                            }
-                            else {
-                                /* document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
-                                document.querySelector(".modal_titulo").textContent = "ERROR";
-                                document.querySelector(".mensaje_modal").textContent = "Debe seleccionar un parámetro PROBABILIDAD DE OCURRENCIA correcto"; */
+                            } else {
                                 Swal.fire({
                                     title: 'Error!',
-                                    text: 'Debe seleccionar un parámetro PROBABILIDAD DE OCURRENCIA correcto',
+                                    text: 'Debe seleccionar un Factor de Riesgo ANTIGÜEDAD correcto',
                                     icon: 'error',
                                     confirmButtonText: 'OK',
                                     confirmButtonColor: 'rgb(55, 128, 211)'
                                 })
                             }
                         } else {
-                            /* document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
-                            document.querySelector(".modal_titulo").textContent = "ERROR";
-                            document.querySelector(".mensaje_modal").textContent = "Debe seleccionar un Factor de Riesgo ANTIGÜEDAD correcto"; */
                             Swal.fire({
                                 title: 'Error!',
-                                text: 'Debe seleccionar un Factor de Riesgo ANTIGÜEDAD correcto',
+                                text: 'Debe seleccionar un Factor de Riesgo CUMPLIMIENTO correcto',
                                 icon: 'error',
                                 confirmButtonText: 'OK',
                                 confirmButtonColor: 'rgb(55, 128, 211)'
                             })
                         }
                     } else {
-            /*             document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
-                        document.querySelector(".modal_titulo").textContent = "ERROR";
-                        document.querySelector(".mensaje_modal").textContent = "Debe seleccionar un Factor de Riesgo CUMPLIMIENTO correcto";
-             */            Swal.fire({
-                        title: 'Error!',
-                        text: 'Debe seleccionar un Factor de Riesgo CUMPLIMIENTO correcto',
-                        icon: 'error',
-                        confirmButtonText: 'OK',
-                        confirmButtonColor: 'rgb(55, 128, 211)'
-                    })
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Debe seleccionar un Factor de Riesgo IMPACTO MONERARIO correcto',
+                            icon: 'error',
+                            confirmButtonText: 'OK',
+                            confirmButtonColor: 'rgb(55, 128, 211)'
+                        })
                     }
+
                 } else {
-                    /* document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
-                    document.querySelector(".modal_titulo").textContent = "ERROR";
-                    document.querySelector(".mensaje_modal").textContent = "Debe seleccionar un Factor de Riesgo IMPACTO MONERARIO correcto"; */
                     Swal.fire({
                         title: 'Error!',
-                        text: 'Debe seleccionar un Factor de Riesgo IMPACTO MONERARIO correcto',
+                        text: 'Debe seleccionar un Factor de Riesgo INFORMACIÓN correcto',
                         icon: 'error',
                         confirmButtonText: 'OK',
                         confirmButtonColor: 'rgb(55, 128, 211)'
@@ -320,70 +648,85 @@ document.querySelector(".botonCargar").addEventListener("click", function () {
                 }
 
             } else {
-                /* document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
-                document.querySelector(".modal_titulo").textContent = "ERROR";
-                document.querySelector(".mensaje_modal").textContent = "Debe seleccionar un Factor de Riesgo INFORMACIÓN correcto"; */
                 Swal.fire({
                     title: 'Error!',
-                    text: 'Debe seleccionar un Factor de Riesgo INFORMACIÓN correcto',
+                    text: 'Debe seleccionar un Factor de Riesgo OPERACIONAL correcto',
                     icon: 'error',
                     confirmButtonText: 'OK',
                     confirmButtonColor: 'rgb(55, 128, 211)'
                 })
             }
-
-        } else {
-            /* document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
-            document.querySelector(".modal_titulo").textContent = "ERROR";
-            document.querySelector(".mensaje_modal").textContent = "Debe seleccionar un Factor de Riesgo OPERACIONAL correcto"; */
-            Swal.fire({
-                title: 'Error!',
-                text: 'Debe seleccionar un Factor de Riesgo OPERACIONAL correcto',
-                icon: 'error',
-                confirmButtonText: 'OK',
-                confirmButtonColor: 'rgb(55, 128, 211)'
-            })
         }
     }
-}
-);
-
-/* document.getElementsByClassName("boton")[0].addEventListener("click", function (e) {
-    e.preventDefault();
-    document.getElementsByClassName("fondo_transparente")[0].style.display = "none"
 })
- */
+
 function imprimirDetalle({ codigo, descripcion, riesgoasignado, tipo, origen }) {
-    let nodo = document.createElement("div");
-    tipo === "SISTEMAS" ? nodo.innerHTML = `<p>${codigo}: La observación ${descripcion}, es de Riesgo ${riesgoasignado} y es una observación de Auditoria de ${tipo}</p>` : nodo.innerHTML = `<p>${codigo}: La observación ${descripcion}, es de Riesgo ${riesgoasignado} y es una observación de Auditoria ${tipo}</p>`;
-    /* if (tipo === "SISTEMAS") {
-        nodo.innerHTML = `<p>${codigo}: La observación ${descripcion}, es de Riesgo ${riesgoasignado} y es una observación de Auditoria de ${tipo}</p>`
-    } else {
-        nodo.innerHTML = `<p>${codigo}: La observación ${descripcion}, es de Riesgo ${riesgoasignado} y es una observación de Auditoria ${tipo}</p>`
-    } */
-    contenedor.appendChild(nodo);
+    let columnaDos = document.createElement("td");
+    columnaDos.textContent = codigo;
+    tabla.appendChild(columnaDos);
+
+    columnaDos = document.createElement("td");
+    columnaDos.textContent = descripcion;
+    tabla.appendChild(columnaDos);
+
+    columnaDos = document.createElement("td");
+    columnaDos.textContent = riesgoasignado;
+    tabla.appendChild(columnaDos);
+
+    columnaDos = document.createElement("td");
+    columnaDos.textContent = tipo;
+    tabla.appendChild(columnaDos);
+
+    columnaDos = document.createElement("td");
+    columnaDos.textContent = origen;
+    tabla.appendChild(columnaDos);
 }
 
+let tabla = document.createElement("table");
+let nodito = document.createElement("div");
+
+//Funcion utilizada para crear una tabla en funcion del reporte seleccionado
 function agregarhtml(arreglo) {
+    tabla.remove();
+    nodito.remove();
     if (arreglo.length != 0) {
-        let nodito = document.createElement("div");
-        nodito.innerHTML = `<h4> Reporte de Observaciones:</h4>`;
+        tabla = document.createElement("table");
+        nodito = document.createElement("div");
+        nodito.innerHTML = `<h4 > Reporte de Observaciones</h4>`;
         contenedor.appendChild(nodito);
-        arreglo.forEach(i => {
-            imprimirDetalle(i);
-            /* let nodo = document.createElement("div");
-            let { codigo, descripcion, riesgoasignado, tipo, origen} = i;
-            if (tipo === "SISTEMAS") {
-                nodo.innerHTML = `<p>${codigo}: La observación ${descripcion}, es de Riesgo ${riesgoasignado} y es una observación de Auditoria de ${tipo}</p>`
-            } else {
-                nodo.innerHTML = `<p>${codigo}: La observación ${descripcion}, es de Riesgo ${riesgoasignado} y es una observación de Auditoria ${tipo}</p>`
-            } 
-            contenedor.appendChild(nodo); */
-        })
+        contenedor.appendChild(tabla);
+        let fila = document.createElement("tr");
+        tabla.appendChild(fila);
+        let columnaUno = document.createElement("th");
+        columnaUno.textContent = "Codigo";
+        tabla.appendChild(columnaUno);
+        columnaUno = document.createElement("th");
+        columnaUno.textContent = "Descripción";
+        tabla.appendChild(columnaUno);
+        columnaUno = document.createElement("th");
+        columnaUno.textContent = "Riesgo Asignado";
+        tabla.appendChild(columnaUno);
+        columnaUno = document.createElement("th");
+        columnaUno.textContent = "Tipo de Auditoria";
+        tabla.appendChild(columnaUno);
+        columnaUno = document.createElement("th");
+        columnaUno.textContent = "Origen";
+        tabla.appendChild(columnaUno);
+        const llamarObs = () => {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    resolve(arreglo);
+                }, 5000);
+            })
+        }
+        llamarObs()
+            .then(arreglo.forEach(i => {
+                fila = document.createElement("tr");
+                tabla.appendChild(fila);
+                imprimirDetalle(i);
+            }))
+            .catch(error => contenedor.innerHTML = error);
     } else {
-        /* let nodo = document.createElement("div");
-        nodo.innerHTML = `<p>No se encontraron observaciones para ese filtro aplicado</p>`
-        contenedor.appendChild(nodo); */
         Swal.fire({
             title: 'Error!',
             text: 'No se encontraron observaciones para ese filtro aplicado',
@@ -394,83 +737,15 @@ function agregarhtml(arreglo) {
     }
 }
 
-document.querySelector(".generarReporte").addEventListener("click", () => {
-    let filtroListado1 = document.querySelector(".selectFRiesgo").value;
-    let filtroListado2 = document.querySelector(".selectFTipo").value;
-    //    let filtroListado3 = document.querySelector(".selectFTipo").value;
-    const observacionesStorage = JSON.parse(localStorage.getItem("observaciones"));
-    if (filtroListado1 === "1" && filtroListado2 === "1") {//todos
-        agregarhtml(observacionesStorage);
-    } else if (filtroListado1 === "2" && filtroListado2 === "1") {
-        let respuesta = "ALTO";
-        const observacionesFiltradas = observacionesStorage.filter(i => i.riesgoasignado === respuesta);
-        agregarhtml(observacionesFiltradas);
-    } else if (filtroListado1 === "3" && filtroListado2 === "1") {
-        let respuesta = "MEDIO";
-        const observacionesFiltradas = observacionesStorage.filter(i => i.riesgoasignado === respuesta);
-        agregarhtml(observacionesFiltradas);
-    } else if (filtroListado1 === "4" && filtroListado2 === "1") {
-        let respuesta = "BAJO";
-        const observacionesFiltradas = observacionesStorage.filter(i => i.riesgoasignado === respuesta);
-        agregarhtml(observacionesFiltradas);
-    } else if (filtroListado1 === "1" && filtroListado2 === "2") {
-        let respuestaTipo = "OPERATIVA";
-        const observacionesFiltradas = observacionesStorage.filter(i => i.tipo === respuestaTipo);
-        agregarhtml(observacionesFiltradas);
-    } else if (filtroListado1 === "1" && filtroListado2 === "3") {
-        let respuestaTipo = "SISTEMAS";
-        const observacionesFiltradas = observacionesStorage.filter(i => i.tipo === respuestaTipo);
-        agregarhtml(observacionesFiltradas);
-    } else if (filtroListado1 === "2" && filtroListado2 === "2") {
-        let respuestaTipo = "OPERATIVA";
-        let respuesta = "ALTO";
-        const observacionesFiltradas = observacionesStorage.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
-        agregarhtml(observacionesFiltradas);
-    }
-    else if (filtroListado1 === "2" && filtroListado2 === "3") {
-        let respuestaTipo = "SISTEMAS";
-        let respuesta = "ALTO";
-        const observacionesFiltradas = observacionesStorage.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
-        agregarhtml(observacionesFiltradas);
-    } else if (filtroListado1 === "3" && filtroListado2 === "2") {
-        let respuestaTipo = "OPERATIVA";
-        let respuesta = "MEDIO";
-        const observacionesFiltradas = observacionesStorage.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
-        agregarhtml(observacionesFiltradas);
-    }
-    else if (filtroListado1 === "3" && filtroListado2 === "3") {
-        let respuestaTipo = "SISTEMAS";
-        let respuesta = "MEDIO";
-        const observacionesFiltradas = observacionesStorage.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
-        agregarhtml(observacionesFiltradas);
-    } else if (filtroListado1 === "4" && filtroListado2 === "2") {
-        let respuestaTipo = "OPERATIVA";
-        let respuesta = "BAJO";
-        const observacionesFiltradas = observacionesStorage.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
-        agregarhtml(observacionesFiltradas);
-    }
-    else if (filtroListado1 === "4" && filtroListado2 === "3") {
-        let respuestaTipo = "SISTEMAS";
-        let respuesta = "BAJO";
-        const observacionesFiltradas = observacionesStorage.filter(i => (i.tipo === respuestaTipo && i.riesgoasignado === respuesta));
-        agregarhtml(observacionesFiltradas);
-    }
-}
-)
 
-
+/* Esto es para buscar una observacion en particular
 document.querySelector(".botonBuscar").addEventListener("click", (e) => {
     e.preventDefault();
     const observacionesStorage = JSON.parse(localStorage.getItem("observaciones"));
     let respuesta = document.querySelector(".etiquetaBuscar").value.toUpperCase();
-    /*     document.getElementsByClassName("fondo_transparente")[0].style.display = "block";
-        document.querySelector(".modal_titulo").textContent = "RESULTADO DE LA BUSQUEDA";
-     */    /*     respuesta && observacionesStorage.some(i => i.descripcion === respuesta) ? document.querySelector(".mensaje_modal").textContent = `La observacion ${respuesta} existe en el listado de observaciones </p>` : document.querySelector(".mensaje_modal").textContent = `La observacion ${respuesta} NO existe en el listado de observaciones </p>`;
-} */
-    if (respuesta) {
+        if (respuesta) {
         if (observacionesStorage.some(i => i.descripcion === respuesta)) {
-            /* document.querySelector(".mensaje_modal").textContent = `La observacion ${respuesta} existe en el listado de observaciones`; */
-            Swal.fire({
+                Swal.fire({
                 title: 'SI EXISTE',
                 text: `La observacion "${respuesta}" existe en el listado de observaciones`,
                 icon: 'success',
@@ -484,8 +759,7 @@ document.querySelector(".botonBuscar").addEventListener("click", (e) => {
             }
             localStorage.setItem('observacionesBuscadas', JSON.stringify(objetoBuscado));
         } else {
-            /* document.querySelector(".mensaje_modal").textContent = `La observacion ${respuesta} NO existe en el listado de observaciones`; */
-            Swal.fire({
+                Swal.fire({
                 title: 'NO EXISTE',
                 text: `La observacion "${respuesta}" no existe en el listado de observaciones`,
                 icon: 'error',
@@ -508,12 +782,12 @@ document.querySelector(".buscados").addEventListener("click", () => {
         nodo.innerHTML = `<p> La observacion ${buscadas.descripcion} fue la ultima buscada el dia ${buscadas.fecha}</p>`;
     }
     contenedor.appendChild(nodo);
-})
+}) */
 
-
+// Para resetear el formulario
 window.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
-        document.getElementById("formulario").reset();
+        estaUno === 1 && document.getElementById("formulario").reset();
     }
 })
 
